@@ -1,0 +1,16 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+	:root {
+		--default-text-color: #444;
+
+		font-family: Arial, sans-serif;
+		font-size: 16px;
+		color: var(--default-text-color);
+		line-height: 1.5;
+		box-sizing: border-box;
+		-webkit-tap-highlight-color: transparent;
+	}
+}
