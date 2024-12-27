@@ -3,14 +3,16 @@
 	import TransactionForm from '~/components/TransactionForm.svelte';
 
 	let { data } = $props();
-	console.log('new transaction:', data);
+	// console.log('new transaction:', data);
 </script>
 
-<Header title="{data.account.title}: Transaction" returnPath="/#/accounts/{data.account.id}" />
+<Header title="{data.account.title}: New Transaction" returnPath="/#/accounts/{data.account.id}" />
 
 <TransactionForm
-	accountId={data.account.id}
+	account={data.account}
 	defaultTimestamp={data.t ? parseInt(data.t) : undefined}
+	accountGroups={data.accountGroups}
+	accounts={data.accounts}
 	onsave={() => {
 		console.log('on save');
 	}}

@@ -1,21 +1,26 @@
 <script lang="ts">
-	import type { TransactionDoc, TransactionParams } from '~/type';
+	import type { AccountDoc, AccountGroupDoc, TransactionDoc, TransactionParams } from '~/type';
 	import { TransactionKind } from '~/lib/enum';
 	import KindSelect from './controls/KindSelect.svelte';
 	import Button from './controls/Button.svelte';
 	import AccountSelect from './AccountSelect.svelte';
-	import { getLocalCustomISODateString } from '~/lib/utils';
+	import { formatAmount, getLocalCustomISODateString, validateAmount } from '~/lib/utils';
 	import CategoryCombo from './CategoryCombo.svelte';
+	import InputBox from './controls/InputBox.svelte';
 	import { focus } from '~/lib/actions/focus';
+	import Keypad from './Keypad.svelte';
 
 	interface Props {
-		accountId: string;
+		account: AccountDoc;
 		transactionDoc?: TransactionDoc;
 		defaultTimestamp?: number;
+		accountGroups: AccountGroupDoc[];
+		accounts: AccountDoc[];
 		onsave: (params: TransactionParams) => void;
 	}
 
-	let { accountId, transactionDoc, defaultTimestamp, onsave }: Props = $props();
+	let { account, transactionDoc, defaultTimestamp, accountGroups, accounts, onsave }: Props =
+		$props();
 
 	let kind: TransactionKind = $state(transactionDoc?.kind || TransactionKind.Expense);
 	let timestamp = $state(
@@ -25,6 +30,11 @@
 	);
 	let categoryId: string | undefined = $state(transactionDoc?.categoryId);
 	let secondAccountId: string | undefined = $state(transactionDoc?.secondAccountId);
+	let amount = $state(transactionDoc ? formatAmount(transactionDoc.amount) : '');
+	let comment = $state(transactionDoc?.comment || '');
+	let reconciled = $state(transactionDoc?.reconciled || false);
+
+	$inspect(secondAccountId);
 
 	let categoryCombo = $state<CategoryCombo>();
 
@@ -56,7 +66,7 @@
 
 	<div class="flex gap-[10px]">
 		{#if kind === TransactionKind.Transfer}
-			<AccountSelect bind:accountId={secondAccountId} placeholder="To" />
+			<AccountSelect bind:accountId={secondAccountId} {accounts} {accountGroups} placeholder="To" />
 		{:else}
 			<CategoryCombo bind:this={categoryCombo} bind:categoryId />
 			<Button
@@ -67,4 +77,37 @@
 			>
 		{/if}
 	</div>
+
+	<div>
+		Amount, {account.currencyCode}:
+		<InputBox
+			class={[
+				'w-full',
+				amount.trim() !== '' && !validateAmount(amount) && 'border-[red] text-[red]'
+			]}
+			type="text"
+			bind:value={amount}
+		/>
+	</div>
+
+	<div>
+		<InputBox class="w-full" type="text" bind:value={comment} placeholder="Comment"></InputBox>
+	</div>
+
+	<div>
+		<label class="flex gap-[5px]">
+			<input type="checkbox" bind:checked={reconciled} />
+			<span>Reconciled</span>
+		</label>
+	</div>
+
+	<Keypad
+		onkey={(k) => {
+			if (k === '<') {
+				amount = amount.substring(0, amount.length - 1);
+			} else {
+				amount += k;
+			}
+		}}
+	/>
 </form>

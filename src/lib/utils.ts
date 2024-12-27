@@ -85,3 +85,7 @@ export function getLocalCustomISODateString(date: Date) {
 
 	return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+export function validateAmount(value: string) {
+	return /^[1-9]\d*([.,](\d{1,2})?)?$/.test(value);
+}

@@ -32,7 +32,6 @@
 	<div class="cursor-pointer select-none" data-role="caption" onclick={toggle ? ontoggle : null}>
 		{@render caption()}
 	</div>
-	<!--  py-[5px] -->
 	<div
 		class="absolute right-0 hidden select-none bg-white shadow group-data-[opened]:block"
 		data-role="popover"
