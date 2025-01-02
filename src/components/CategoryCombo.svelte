@@ -5,15 +5,20 @@
 
 	interface Props {
 		categoryId: string | undefined;
+		value: string;
 	}
-
-	let { categoryId = $bindable() }: Props = $props();
-
-	let filter = $state(false);
 
 	let { categories } = useStore();
 
-	let value = $state(categoryId ? getCategoryTitle(categoryId) : '');
+	let { categoryId = $bindable(), value = $bindable('') }: Props = $props();
+	if (categoryId) {
+		value = getCategoryTitle(categoryId);
+	}
+
+	let filter = $state(false);
+
+	// let value = $state(categoryId ? getCategoryTitle(categoryId) : '');
+
 	let categoryList = $derived.by(() => {
 		value; // trigger on change
 		return filter

@@ -4,6 +4,8 @@
 
 <button
 	{...rest}
-	class={['cursor-pointer rounded-sm border border-gray-500 bg-gray-200', rest.class]}
-	>{@render children()}</button
+	class={[
+		'cursor-pointer rounded-sm border border-gray-500 bg-gray-200  text-[length:inherit]',
+		rest.class
+	]}>{@render children()}</button
 >

@@ -1,6 +1,8 @@
+import type { Writable } from 'svelte/store';
 import { type IDBPDatabase, openDB } from 'idb';
 import { nanoid } from 'nanoid';
-import type { AccDB } from '~/type';
+import type { AccDB, TransactionParams, TransactionDoc, EntryDoc, AccountDoc } from '~/type';
+import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
 
 export let db: IDBPDatabase<AccDB>;
@@ -62,6 +64,7 @@ export async function getAccountGroups() {
 }
 
 export async function getAccounts() {
+	console.log('gettting accounts...');
 	await initDb();
 	return db.getAllFromIndex('accounts', 'title');
 }
@@ -101,6 +104,7 @@ export async function getRates() {
 }
 
 export async function getEntries(accountId: string, reverse = true) {
+	console.log('Getting entries...');
 	await initDb();
 	const entryDocs = await db.getAllFromIndex('entries', 'accountId', accountId);
 	return entryDocs.sort((a, b) => {
@@ -112,6 +116,17 @@ export async function getEntries(accountId: string, reverse = true) {
 export async function getCategories() {
 	await initDb();
 	return db.getAllFromIndex('categories', 'title');
+}
+
+export async function createCategory(title: string, subtitle: string) {
+	await initDb();
+	const cat = {
+		id: nanoid(5),
+		title,
+		subtitle
+	};
+	await db.put('categories', cat);
+	return cat;
 }
 
 export async function createAccount(title: string, groupId: string, currencyCode: string) {
@@ -128,4 +143,174 @@ export async function createAccount(title: string, groupId: string, currencyCode
 export async function getCurrencies() {
 	await initDb();
 	return db.getAll('currencies');
+}
+
+export async function createTransaction(params: TransactionParams) {
+	const tx = db.transaction(['entries', 'transactions'], 'readwrite');
+	const entriesStore = tx.objectStore('entries');
+	const transactionsStore = tx.objectStore('transactions');
+
+	const [transactionDoc, entryDoc, secondEntryDoc] = makeTransactionDocs(
+		params,
+		nanoid(5),
+		nanoid(5),
+		nanoid(5)
+	);
+
+	await Promise.all([
+		transactionsStore.add(transactionDoc),
+		entriesStore.add(entryDoc),
+		...(secondEntryDoc ? [entriesStore.add(secondEntryDoc)] : []),
+		tx.done
+	]);
+
+	const [changed1, changed2] = await Promise.all([
+		recalcBalance(transactionDoc.accountId),
+		transactionDoc.secondAccountId ? recalcBalance(transactionDoc.secondAccountId) : false
+	]);
+	/* if (changed1 || changed2) {
+		accounts.set(await getAccounts());
+	} */
+	return transactionDoc;
+}
+
+export async function recalcBalance(accountId: string) {
+	const entries = await getEntries(accountId, false);
+	let total = 0;
+	for (const entry of entries) {
+		total += entry.amount;
+		if (entry.total !== total) {
+			await db.put('entries', {
+				...entry,
+				total
+			});
+		}
+	}
+	const account = await getAccount(accountId);
+	if (!account) {
+		return;
+	}
+	if (account.balance !== total) {
+		await db.put('accounts', {
+			...account,
+			balance: total
+		});
+		return true;
+	}
+	return false;
+}
+
+export function makeTransactionDocs(
+	{
+		kind,
+		accountId,
+		timestamp,
+		categoryId,
+		secondAccountId,
+		secondAmount,
+		amount,
+		comment,
+		reconciled
+	}: TransactionParams,
+	transactionId: string,
+	entryId: string,
+	secondEntryId?: string
+): [TransactionDoc, EntryDoc, EntryDoc?] {
+	const entryDoc: EntryDoc = {
+		id: entryId,
+		timestamp,
+		accountId,
+		...(categoryId ? { categoryId } : {}),
+		transactionId,
+		comment,
+		amount: kind === TransactionKind.Income ? amount : -amount,
+		total: 0,
+		...(reconciled ? { reconciled } : {})
+	};
+
+	if (kind === TransactionKind.Transfer && secondEntryId && secondAccountId) {
+		const secondEntryDoc: EntryDoc = {
+			id: secondEntryId,
+			timestamp,
+			accountId: secondAccountId,
+			transactionId,
+			comment,
+			amount: secondAmount || amount,
+			total: 0,
+			...(reconciled ? { reconciled } : {})
+		};
+
+		const transactionDoc: TransactionDoc = {
+			id: transactionId,
+			kind,
+			timestamp,
+			accountId,
+			secondAccountId,
+			amount,
+			...(secondAmount ? { secondAmount } : {}),
+			comment,
+			entryId: entryDoc.id,
+			secondEntryId: secondEntryDoc.id,
+			...(reconciled ? { reconciled } : {})
+		};
+		return [transactionDoc, entryDoc, secondEntryDoc];
+	} else {
+		const transactionDoc: TransactionDoc = {
+			id: transactionId,
+			kind,
+			timestamp,
+			accountId,
+			...(categoryId ? { categoryId } : {}),
+			amount,
+			comment,
+			entryId: entryDoc.id,
+			...(reconciled ? { reconciled } : {})
+		};
+		return [transactionDoc, entryDoc];
+	}
+}
+
+export async function updateTransaction(
+	prevTransactionDoc: TransactionDoc,
+	newParams: TransactionParams
+) {
+	const [prevEntryDoc, prevSecondEntryDoc] = await Promise.all([
+		db.get('entries', prevTransactionDoc.entryId),
+		prevTransactionDoc.secondEntryId ? db.get('entries', prevTransactionDoc.secondEntryId) : null
+	]);
+	if (!prevEntryDoc) {
+		return;
+	}
+
+	const [transactionDoc, entryDoc, secondEntryDoc] = makeTransactionDocs(
+		newParams,
+		prevTransactionDoc.id,
+		prevEntryDoc.id,
+		prevSecondEntryDoc ? prevSecondEntryDoc.id : nanoid(5)
+	);
+
+	await Promise.all([
+		db.put('transactions', transactionDoc),
+		db.put('entries', entryDoc),
+		secondEntryDoc
+			? prevSecondEntryDoc
+				? db.put('entries', secondEntryDoc)
+				: db.add('entries', secondEntryDoc)
+			: prevSecondEntryDoc
+				? db.delete('entries', prevSecondEntryDoc.id)
+				: null
+	]);
+
+	const [changed1, changed2] = await Promise.all([
+		recalcBalance(transactionDoc.accountId),
+		transactionDoc.secondAccountId ? recalcBalance(transactionDoc.secondAccountId) : null,
+		prevTransactionDoc.secondAccountId &&
+		prevTransactionDoc.secondAccountId !== newParams.secondAccountId
+			? recalcBalance(prevTransactionDoc.secondAccountId)
+			: null
+	]);
+
+	/* if (changed1 || changed2) {
+		 accounts.set(await getAccounts());
+	} */
 }
