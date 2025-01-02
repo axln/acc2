@@ -29,7 +29,7 @@
 
 	let input: HTMLInputElement;
 
-	let { class: className = '', accountGroups, account, onsave }: Props = $props();
+	let { accountGroups, account, onsave, ...rest }: Props = $props();
 
 	$effect(() => {
 		input.focus();
@@ -42,7 +42,7 @@
 	}
 </script>
 
-<form class="space-y-2.5 {className}" {onsubmit}>
+<form class={['space-y-2.5', rest.class]} {onsubmit}>
 	<div>
 		<AccountGroupSelect {accountGroups} bind:groupId />
 	</div>

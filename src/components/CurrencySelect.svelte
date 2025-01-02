@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Select from './controls/Select.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
@@ -12,8 +13,8 @@
 	$inspect($currencies);
 </script>
 
-<select
-	class="w-full rounded border border-solid border-[#ccc] p-[5px] text-[length:inherit] invalid:text-[#aaa]"
+<Select
+	class="w-full py-[7px] text-[length:inherit] invalid:text-[#aaa]"
 	bind:value={currencyCode}
 	required
 >
@@ -22,4 +23,4 @@
 	{#each $currencies as { code, title } (code)}}
 		<option value={code}>{code} {title}</option>
 	{/each}
-</select>
+</Select>

@@ -1,3 +1,5 @@
-export function focus(input: HTMLInputElement) {
-	input.focus();
+export function focus(input: HTMLInputElement, enabled = false) {
+	if (enabled) {
+		input.focus();
+	}
 }
