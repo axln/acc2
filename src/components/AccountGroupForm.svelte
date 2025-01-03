@@ -6,14 +6,13 @@
 	import { useStore } from '~/lib/store';
 
 	interface Props {
-		class?: any;
 		accountGroup?: AccountGroupDoc;
 		onsave(params: { currencyCode: string; title: string }): Promise<void>;
 	}
 
 	const { baseCurrencyCode } = useStore();
 
-	let { accountGroup, onsave, ...rest }: Props = $props();
+	let { accountGroup, onsave }: Props = $props();
 
 	let currencyCode = $state(accountGroup?.currencyCode || $baseCurrencyCode);
 	let title = $state(accountGroup?.title || '');
@@ -21,7 +20,7 @@
 </script>
 
 <form
-	class={['m-[10px] space-y-2.5', rest.class]}
+	class="m-[10px] space-y-2.5"
 	onsubmit={async (e) => {
 		e.preventDefault();
 		if (title.trim() && currencyCode) {

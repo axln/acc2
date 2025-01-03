@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 import { type IDBPDatabase, openDB } from 'idb';
 import { nanoid } from 'nanoid';
 import type {
@@ -6,8 +5,8 @@ import type {
 	TransactionParams,
 	TransactionDoc,
 	EntryDoc,
-	AccountDoc,
-	AccountGroupDoc
+	AccountGroupDoc,
+	CategoryDoc
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
@@ -76,7 +75,7 @@ export async function getAccountGroup(id: string) {
 }
 
 export async function getAccounts() {
-	console.log('gettting accounts...');
+	// console.log('gettting accounts...');
 	await initDb();
 	return db.getAllFromIndex('accounts', 'title');
 }
@@ -139,6 +138,11 @@ export async function createCategory(title: string, subtitle: string) {
 	};
 	await db.put('categories', cat);
 	return cat;
+}
+
+export async function updateCategory(categoryDoc: CategoryDoc) {
+	await initDb();
+	await db.put('categories', categoryDoc);
 }
 
 export async function createAccount(title: string, groupId: string, currencyCode: string) {
