@@ -6,7 +6,8 @@ import type {
 	TransactionDoc,
 	EntryDoc,
 	AccountGroupDoc,
-	CategoryDoc
+	CategoryDoc,
+	CurrencyDoc
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
@@ -156,7 +157,7 @@ export async function createAccount(title: string, groupId: string, currencyCode
 	});
 }
 
-export async function getCurrencies() {
+export async function getCurrencies(): Promise<CurrencyDoc[]> {
 	await initDb();
 	return db.getAll('currencies');
 }
@@ -343,4 +344,17 @@ export async function createAccountGroup(title: string, currencyCode: string) {
 		currencyCode,
 		title
 	});
+}
+
+export async function createCurrency(code: string, title: string) {
+	await initDb();
+	await db.put('currencies', {
+		code,
+		title
+	});
+}
+
+export async function updateCurrency(currencyDoc: CurrencyDoc) {
+	await initDb();
+	await db.put('currencies', currencyDoc);
 }
