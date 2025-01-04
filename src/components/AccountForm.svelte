@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script module>
 	export interface AccountInfo {
 		title: string;
 		groupId: string;
@@ -10,39 +10,45 @@
 	import type { AccountDoc, AccountGroupDoc } from '~/type';
 	import AccountGroupSelect from './AccountGroupSelect.svelte';
 	import CurrencySelect from './CurrencySelect.svelte';
+	import InputBox from './controls/InputBox.svelte';
+	import Button from './controls/Button.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
-		class?: string;
-
+		class?: any;
 		accountGroups: AccountGroupDoc[];
 		account?: AccountDoc;
-		onsave: (fields: AccountInfo) => void;
+		onsave: (fields: AccountInfo) => Promise<void>;
 	}
-
-	let { baseCurrencyCode } = useStore();
-
-	let groupId: string | undefined = $state();
-	let currencyCode: string = $state($baseCurrencyCode);
-	let adding = $state(false);
-	let title = $state('');
-
-	let input: HTMLInputElement;
 
 	let { accountGroups, account, onsave, ...rest }: Props = $props();
 
-	$effect(() => {
-		input.focus();
-	});
+	let { baseCurrencyCode } = useStore();
 
-	function onsubmit(e: SubmitEvent) {
-		e.preventDefault();
-		adding = true;
-		console.log('submit');
-	}
+	let groupId = $state(account?.groupId || undefined);
+	let currencyCode = $state(account?.currencyCode || $baseCurrencyCode);
+	let title = $state(account?.title || '');
+
+	let adding = $state(false);
 </script>
 
-<form class={['space-y-2.5', rest.class]} {onsubmit}>
+<form
+	class={['space-y-2.5', rest.class]}
+	onsubmit={async (e) => {
+		e.preventDefault();
+
+		if (groupId && title.trim() && currencyCode) {
+			adding = true;
+			try {
+				await onsave({ title, groupId, currencyCode });
+			} finally {
+				adding = false;
+			}
+		} else {
+			alert('All fields are required.');
+		}
+	}}
+>
 	<div>
 		<AccountGroupSelect {accountGroups} bind:groupId />
 	</div>
@@ -52,27 +58,23 @@
 	</div>
 
 	<div>
-		<input
-			class="w-full rounded border border-solid border-[#ccc] p-[5px] text-[length:inherit]"
+		<InputBox
+			class="w-full text-[length:inherit]"
 			type="text"
 			bind:value={title}
-			bind:this={input}
+			focus
 			placeholder="Title"
 			disabled={adding}
 		/>
 	</div>
 
 	<div>
-		<button
-			class="w-full rounded border border-solid border-[#ccc] bg-gray-100 p-[5px] text-[inherit] hover:bg-gray-200 active:bg-gray-300"
-			type="submit"
-			disabled={adding}
-		>
+		<Button class="w-full p-[5px]" type="submit" disabled={adding}>
 			{#if account}
 				Save
 			{:else}
 				Create
 			{/if}
-		</button>
+		</Button>
 	</div>
 </form>

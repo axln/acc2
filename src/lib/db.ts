@@ -9,7 +9,8 @@ import type {
 	CategoryDoc,
 	CurrencyDoc,
 	SettingsDoc,
-	RateDoc
+	RateDoc,
+	AccountDoc
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
@@ -157,6 +158,11 @@ export async function createAccount(title: string, groupId: string, currencyCode
 		currencyCode,
 		balance: 0
 	});
+}
+
+export async function updateAccount(accountDoc: AccountDoc) {
+	await initDb();
+	await db.put('accounts', accountDoc);
 }
 
 export async function getCurrencies(): Promise<CurrencyDoc[]> {
