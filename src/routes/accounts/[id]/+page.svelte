@@ -10,7 +10,7 @@
 	import Entry from './Entry.svelte';
 
 	let { data } = $props();
-	console.log('account data:', data);
+	// console.log('account data:', data);
 
 	let menuItems = $derived([
 		{

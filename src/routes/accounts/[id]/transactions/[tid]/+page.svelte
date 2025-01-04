@@ -1,10 +1,26 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Header from '~/components/Header.svelte';
 	import TransactionForm from '~/components/TransactionForm.svelte';
+	import { deleteTransaction } from '~/lib/db.js';
+	import type { TransactionParams } from '~/type.js';
 
 	let { data } = $props();
 
 	// console.log('transaction data:', data);
+
+	async function onsave(params: TransactionParams) {
+		const { updateTransaction } = await import('~/lib/db');
+		await updateTransaction(data.transactionDoc, params);
+		goto(`/#/accounts/${data.transactionDoc.accountId}`);
+	}
+
+	async function onmenu(id: string) {
+		if (id === 'delete') {
+			await deleteTransaction(data.transactionDoc.id);
+			goto(`/#/accounts/${data.transactionDoc.accountId}`);
+		}
+	}
 </script>
 
 <Header
@@ -16,9 +32,7 @@
 			title: 'Delete'
 		}
 	]}
-	onmenu={(id) => {
-		console.log('onmenu:', id);
-	}}
+	{onmenu}
 />
 
 <TransactionForm
@@ -26,7 +40,5 @@
 	transactionDoc={data.transactionDoc}
 	accountGroups={data.accountGroups}
 	accounts={data.accounts}
-	onsave={(params) => {
-		console.log('onsave:', params);
-	}}
+	{onsave}
 />

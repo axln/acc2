@@ -299,6 +299,7 @@ export async function updateTransaction(
 	prevTransactionDoc: TransactionDoc,
 	newParams: TransactionParams
 ) {
+	await initDb();
 	const [prevEntryDoc, prevSecondEntryDoc] = await Promise.all([
 		db.get('entries', prevTransactionDoc.entryId),
 		prevTransactionDoc.secondEntryId ? db.get('entries', prevTransactionDoc.secondEntryId) : null
@@ -338,6 +339,25 @@ export async function updateTransaction(
 	/* if (changed1 || changed2) {
 		 accounts.set(await getAccounts());
 	} */
+}
+
+export async function deleteTransaction(id: string) {
+	await initDb();
+	const transactionDoc = await db.get('transactions', id);
+	if (!transactionDoc) {
+		return;
+	}
+
+	await Promise.all([
+		db.delete('transactions', id),
+		db.delete('entries', transactionDoc.entryId),
+		transactionDoc.secondEntryId ? db.delete('entries', transactionDoc.secondEntryId) : null
+	]);
+
+	await Promise.all([
+		recalcBalance(transactionDoc.accountId),
+		transactionDoc.secondAccountId ? recalcBalance(transactionDoc.secondAccountId) : null
+	]);
 }
 
 export async function updateAccountGroup(accountGroupDoc: AccountGroupDoc) {
