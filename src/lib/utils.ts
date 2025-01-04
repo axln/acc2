@@ -105,3 +105,11 @@ export function parseAmount(value: string): number {
 		return parseInt(value) * 100;
 	}
 }
+
+export function validateRate(value: string) {
+	return /^([1-9]\d*|[0])([.,]\d+)?$/.test(value);
+}
+
+export function parseRate(value: string): number {
+	return parseFloat(value.replace(',', '.'));
+}

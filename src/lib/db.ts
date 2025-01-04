@@ -7,7 +7,9 @@ import type {
 	EntryDoc,
 	AccountGroupDoc,
 	CategoryDoc,
-	CurrencyDoc
+	CurrencyDoc,
+	SettingsDoc,
+	RateDoc
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
@@ -357,4 +359,21 @@ export async function createCurrency(code: string, title: string) {
 export async function updateCurrency(currencyDoc: CurrencyDoc) {
 	await initDb();
 	await db.put('currencies', currencyDoc);
+}
+
+export async function updateSettings(settingsDoc: SettingsDoc) {
+	await initDb();
+	await db.put('settings', settingsDoc);
+}
+
+export async function updateRates(rateDocs: RateDoc[], baseCurrencyCode: string) {
+	const newRates: Record<string, number> = {};
+	await db.delete('rates', baseCurrencyCode);
+	await Promise.all(
+		rateDocs.map((doc) => {
+			newRates[doc.code] = doc.rate;
+			return db.put('rates', doc);
+		})
+	);
+	return newRates;
 }

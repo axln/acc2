@@ -4,17 +4,19 @@
 
 	interface Props {
 		currencyCode?: string;
+		[k: string]: any;
 	}
 
 	const { currencies } = useStore();
 
-	let { currencyCode = $bindable() }: Props = $props();
+	let { currencyCode = $bindable(), ...rest }: Props = $props();
 
 	$inspect($currencies);
 </script>
 
 <Select
-	class="w-full py-[7px] text-[length:inherit] invalid:text-[#aaa]"
+	{...rest}
+	class={['w-full py-[7px] text-[length:inherit] invalid:text-[#aaa]', rest.class]}
 	bind:value={currencyCode}
 	required
 >
