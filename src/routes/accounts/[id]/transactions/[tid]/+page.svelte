@@ -17,8 +17,10 @@
 
 	async function onmenu(id: string) {
 		if (id === 'delete') {
-			await deleteTransaction(data.transactionDoc.id);
-			goto(`/#/accounts/${data.transactionDoc.accountId}`);
+			if (confirm('Delete transaction?')) {
+				await deleteTransaction(data.transactionDoc.id);
+				goto(`/#/accounts/${data.transactionDoc.accountId}`);
+			}
 		}
 	}
 </script>
