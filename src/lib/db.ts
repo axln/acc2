@@ -10,10 +10,12 @@ import type {
 	CurrencyDoc,
 	SettingsDoc,
 	RateDoc,
-	AccountDoc
+	AccountDoc,
+	DBSnapshot
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
+import { formatTimestamp } from './utils';
 
 export let db: IDBPDatabase<AccDB>;
 
@@ -402,4 +404,130 @@ export async function updateRates(rateDocs: RateDoc[], baseCurrencyCode: string)
 		})
 	);
 	return newRates;
+}
+
+export async function getDBSnapshot(): Promise<DBSnapshot> {
+	await initDb();
+
+	const [currencies, accountGroups, accounts, categories, transactions, entries, settings, rates] =
+		await Promise.all([
+			getCurrencies(),
+			getAccountGroups(),
+			getAccounts(),
+			getCategories(),
+			db.getAll('transactions'),
+			db.getAll('entries'),
+			db.getAll('settings'),
+			db.getAll('rates')
+		]);
+
+	return {
+		ver: formatTimestamp(Date.now()),
+		currencies,
+		rates,
+		settings,
+		accountGroups,
+		accounts,
+		categories,
+		transactions,
+		entries
+	};
+}
+
+export function validateDBSnapshot(snapshot: DBSnapshot) {
+	if (!snapshot.ver) {
+		return false;
+	}
+
+	if (!snapshot.currencies) {
+		return false;
+	}
+
+	if (!snapshot.accountGroups) {
+		return false;
+	}
+
+	if (!snapshot.categories) {
+		return false;
+	}
+
+	if (!snapshot.categories) {
+		return false;
+	}
+
+	if (!snapshot.transactions) {
+		return false;
+	}
+
+	if (!snapshot.entries) {
+		return false;
+	}
+
+	return true;
+}
+
+export async function restoreSnapshot(snapshot: DBSnapshot) {
+	await initDb();
+
+	if (!confirm('All the data will be overwritten. Are you sure you want to continue?')) {
+		return false;
+	}
+
+	if (validateDBSnapshot(snapshot)) {
+		const tx = db.transaction(
+			[
+				'currencies',
+				'accountGroups',
+				'accounts',
+				'categories',
+				'transactions',
+				'entries',
+				'settings',
+				'rates'
+			],
+			'readwrite'
+		);
+
+		await Promise.all([
+			tx.objectStore('currencies').clear(),
+			tx.objectStore('accountGroups').clear(),
+			tx.objectStore('accounts').clear(),
+			tx.objectStore('categories').clear(),
+			tx.objectStore('transactions').clear(),
+			tx.objectStore('entries').clear(),
+			tx.objectStore('settings').clear(),
+			tx.objectStore('rates').clear()
+		]);
+
+		for (const item of snapshot.currencies) {
+			await tx.objectStore('currencies').put(item);
+		}
+		for (const item of snapshot.accountGroups) {
+			await tx.objectStore('accountGroups').put(item);
+		}
+		for (const item of snapshot.accounts) {
+			await tx.objectStore('accounts').put(item);
+		}
+		for (const item of snapshot.categories) {
+			await tx.objectStore('categories').put(item);
+		}
+		for (const item of snapshot.transactions) {
+			await tx.objectStore('transactions').put(item);
+		}
+		for (const item of snapshot.entries) {
+			await tx.objectStore('entries').put(item);
+		}
+		for (const item of snapshot.settings) {
+			await tx.objectStore('settings').put(item);
+		}
+		for (const item of snapshot.rates) {
+			await tx.objectStore('rates').put(item);
+		}
+
+		await tx.done;
+		return true;
+	} else {
+		alert('Invalid snapshot format.');
+		return false;
+	}
 }

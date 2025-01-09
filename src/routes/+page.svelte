@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script module>
 	const menuItems = [
 		{
 			id: 'groups',
@@ -39,8 +39,16 @@
 <script lang="ts">
 	import Header from '~/components/Header.svelte';
 	import AccountGroup from './AccountGroup.svelte';
-	import { formatAmount, getCurrencyRate } from '~/lib/utils';
+	import {
+		chooseTextFile,
+		downloadJSON,
+		formatAmount,
+		formatTimestamp,
+		getCurrencyRate,
+		safeJSONParse
+	} from '~/lib/utils';
 	import { useStore } from '~/lib/store.js';
+	import { getDBSnapshot, restoreSnapshot } from '~/lib/db';
 
 	const { baseCurrencyCode, rates } = useStore();
 
@@ -61,14 +69,26 @@
 		}, 0)
 	);
 
-	function onmenu(id: string) {
-		console.log('menu:', id);
+	async function onmenu(id: string) {
+		// console.log('menu:', id);
 
 		switch (id) {
 			case 'backup':
+				const backup = await getDBSnapshot();
+				downloadJSON(backup, `acc-${formatTimestamp(Date.now())}.json`);
 				break;
 
 			case 'restore':
+				chooseTextFile(async (text) => {
+					const dbSnapshot = safeJSONParse(text);
+					if (dbSnapshot) {
+						const restored = await restoreSnapshot(dbSnapshot);
+						if (restored) {
+							console.log('reloading page...');
+							window.location.reload();
+						}
+					}
+				});
 				break;
 		}
 	}

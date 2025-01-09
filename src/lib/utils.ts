@@ -113,3 +113,58 @@ export function validateRate(value: string) {
 export function parseRate(value: string): number {
 	return parseFloat(value.replace(',', '.'));
 }
+
+export function formatTimestamp(timestamp: number) {
+	const date = new Date(timestamp);
+	const offset = date.getTimezoneOffset() * 60000; // Convert to milliseconds
+	const localTime = new Date(date.getTime() - offset);
+
+	const year = localTime.getFullYear();
+	const month = String(localTime.getUTCMonth() + 1).padStart(2, '0');
+	const day = String(localTime.getUTCDate()).padStart(2, '0');
+	const hours = String(localTime.getUTCHours()).padStart(2, '0');
+	const minutes = String(localTime.getUTCMinutes()).padStart(2, '0');
+
+	return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+export function downloadJSON(data: object, fileName: string) {
+	const dataBlob = new Blob([JSON.stringify(data, null, 2)], {
+		type: 'application/json'
+	});
+	const url = URL.createObjectURL(dataBlob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = fileName;
+	a.click();
+	URL.revokeObjectURL(url);
+}
+
+export function chooseTextFile(onChoose: (text: string) => void) {
+	const fileInput = document.createElement('input');
+	fileInput.type = 'file';
+	fileInput.accept = 'application/json';
+	fileInput.multiple = false;
+
+	fileInput.onchange = () => {
+		const file = fileInput!.files![0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = function () {
+				onChoose(reader.result as string);
+			};
+			reader.readAsText(file);
+		}
+	};
+
+	fileInput.click();
+}
+
+export function safeJSONParse(text: string) {
+	try {
+		return JSON.parse(text);
+	} catch (_) {
+		console.warn('JSON parsing failed.');
+		return null;
+	}
+}
