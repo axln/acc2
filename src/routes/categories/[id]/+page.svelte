@@ -14,7 +14,7 @@
 			title,
 			subtitle: subtitle || ''
 		});
-		categories.set(await getCategories());
+		$categories = await getCategories();
 		goto(`/#/categories`);
 	}
 </script>

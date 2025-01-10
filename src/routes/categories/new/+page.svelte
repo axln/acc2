@@ -9,7 +9,7 @@
 	async function onsave(title: string, subtitle?: string) {
 		const { createCategory, getCategories } = await import('~/lib/db');
 		await createCategory(title, subtitle || '');
-		categories.set(await getCategories());
+		$categories = await getCategories();
 		goto(`/#/categories`);
 	}
 </script>

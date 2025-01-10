@@ -97,7 +97,7 @@
 				const { createCategory, getCategories } = await import('~/lib/db');
 				const cat = await createCategory(title, subtitle);
 				// refreshing categories store
-				categories.set(await getCategories());
+				$categories = await getCategories();
 				// console.log('new cat added:', cat);
 				categoryId = cat.id;
 			}

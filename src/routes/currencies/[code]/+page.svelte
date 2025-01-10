@@ -15,7 +15,7 @@
 			code,
 			title
 		});
-		currencies.set(await getCurrencies());
+		$currencies = await getCurrencies();
 		goto('/#/currencies');
 	}
 </script>

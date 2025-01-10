@@ -9,7 +9,7 @@
 	async function onsave(code: string, title: string) {
 		const { createCurrency, getCurrencies } = await import('~/lib/db');
 		await createCurrency(code, title);
-		currencies.set(await getCurrencies());
+		$currencies = await getCurrencies();
 		goto('/#/currencies');
 	}
 </script>
