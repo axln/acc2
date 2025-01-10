@@ -30,7 +30,6 @@
 			transactionDocs.filter((d) => d.kind !== TransactionKind.Transfer)
 		);
 		addSortedLines(report);
-		console.log('report:', report);
 
 		return report;
 	});
@@ -151,7 +150,6 @@
 		line={splitBySign(report)}
 		header
 		ondocs={(docs) => {
-			console.log('docs:', docs);
 			displayDocs = docs;
 			document.documentElement.style.setProperty('overflow', 'hidden');
 		}}

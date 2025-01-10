@@ -84,7 +84,7 @@
 					if (dbSnapshot) {
 						const restored = await restoreSnapshot(dbSnapshot);
 						if (restored) {
-							console.log('reloading page...');
+							// console.log('reloading page...');
 							window.location.reload();
 						}
 					}

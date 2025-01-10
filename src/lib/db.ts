@@ -50,7 +50,6 @@ const dbPromise = openDB<AccDB>('acc', 3, {
 			transactionsStore.createIndex('timestamp', 'timestamp');
 		} else {
 			const transactionsStore = tx.objectStore('transactions');
-			console.log('store already exists, creating index');
 			transactionsStore.createIndex('timestamp', 'timestamp');
 		}
 

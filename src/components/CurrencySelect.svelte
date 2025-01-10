@@ -10,8 +10,6 @@
 	const { currencies } = useStore();
 
 	let { currencyCode = $bindable(), ...rest }: Props = $props();
-
-	$inspect($currencies);
 </script>
 
 <Select {...rest} class={['w-full', rest.class]} bind:value={currencyCode} required>

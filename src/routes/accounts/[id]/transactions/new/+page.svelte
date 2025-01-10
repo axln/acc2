@@ -10,7 +10,7 @@
 	async function onsave(params: TransactionParams) {
 		const { createTransaction } = await import('~/lib/db');
 		const doc = await createTransaction(params);
-		console.log('transaction created:', doc);
+		// console.log('transaction created:', doc);
 		goto(`/#/accounts/${data.account.id}`);
 	}
 </script>
