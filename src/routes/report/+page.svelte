@@ -180,7 +180,10 @@
 			{#each displayDocs as doc}
 				<div class="border-b border-[#ddd] p-[5px_10px]">
 					<div class="flex">
-						<span>{data.accountById[doc.accountId].title}</span>
+						<span
+							>{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
+								.accountById[doc.accountId].title}</span
+						>
 						<span class="ml-auto">
 							{formatAmount(
 								doc.kind === TransactionKind.Expense ? -doc.amount : doc.amount,
