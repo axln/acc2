@@ -47,7 +47,7 @@
 	}
 
 	function addSortedLines(l: ReportLine) {
-		l.sorted = Object.values(l.lines).sort((a, b) => b.total - a.total);
+		l.sorted = Object.values(l.lines).sort((a, b) => a.total - b.total);
 		for (const item of l.sorted) {
 			addSortedLines(item);
 		}
@@ -164,7 +164,7 @@
 		<!-- content -->
 		<div class="flex-1 overflow-y-auto bg-[#fff] shadow-sm">
 			<!-- header -->
-			<div class="sticky flex items-center border-b border-[#ddd] bg-[#f4f4f8]">
+			<div class="sticky top-0 flex items-center border-b border-[#ddd] bg-[#f4f4f8]">
 				<h2 class="m-[0_10px] flex-auto text-[16px] font-bold text-gray-500">Transactions</h2>
 				<button
 					class="m-[5px] ml-auto rounded-sm border border-gray-400 p-[0_10px] align-middle"

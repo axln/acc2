@@ -532,7 +532,7 @@ export async function restoreSnapshot(snapshot: DBSnapshot) {
 	}
 }
 
-export async function getTransactions(start: number, end: number) {
+export async function getTransactions(start: number, end: number, reverse = false) {
 	await initDb();
 
 	const transactionDocs = await db.getAllFromIndex(
@@ -540,5 +540,5 @@ export async function getTransactions(start: number, end: number) {
 		'timestamp',
 		IDBKeyRange.bound(start, end, false, true)
 	);
-	return transactionDocs;
+	return transactionDocs.sort((a, b) => b.timestamp - a.timestamp);
 }
