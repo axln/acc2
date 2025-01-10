@@ -124,7 +124,7 @@ export async function getEntries(accountId: string, reverse = true) {
 	await initDb();
 	const entryDocs = await db.getAllFromIndex('entries', 'accountId', accountId);
 	return entryDocs.sort((a, b) => {
-		const cmp = b.timestamp - a.timestamp;
+		const cmp = a.timestamp - b.timestamp;
 		return reverse ? -cmp : cmp;
 	});
 }
