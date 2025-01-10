@@ -25,9 +25,7 @@
 </script>
 
 <div>
-	<div
-		class="flex border-b border-solid border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0 font-bold text-[#777]"
-	>
+	<div class="flex border-b border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0 font-bold text-[#777]">
 		<span class="flex-auto">{accountGroup.title}</span>
 		<span>{formatAmount(balance, true)} {accountGroup.currencyCode}</span>
 	</div>

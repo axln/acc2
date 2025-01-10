@@ -20,7 +20,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	id={entry.id}
-	class="cursor-pointer border-b border-solid border-b-[#ddd] px-2.5 py-[5px] hover:bg-[#e1effa] active:bg-[#d1e3f0]"
+	class="cursor-pointer border-b border-b-[#ddd] px-2.5 py-[5px] hover:bg-[#e1effa] active:bg-[#d1e3f0]"
 	class:bg-[#e8ffe0]={entry.reconciled}
 	onclick={() => {
 		ontransaction(entry.transactionId);
@@ -32,7 +32,7 @@
 
 			{#if category}
 				<span
-					class="whitespace-nowrap rounded-[5px] border border-solid border-[#ddd] bg-[#eee] px-[3px] py-px text-[13px] leading-[1em]"
+					class="whitespace-nowrap rounded border border-[#ddd] bg-[#eee] px-[3px] text-[13px] leading-[1em]"
 				>
 					{category.title}{category.subtitle ? `:${category.subtitle}` : ''}
 				</span>

@@ -64,7 +64,7 @@
 />
 
 {#each Object.keys(entriesByDays) as dayKey}
-	<div class="flex gap-2.5 border-b border-solid border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0">
+	<div class="flex gap-2.5 border-b border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0">
 		<span class="flex-auto font-bold">{dayKey}</span>
 		<span class="flex-none">{formatAmount(getDayTotal(entriesByDays[dayKey]), true, true)}</span>
 	</div>

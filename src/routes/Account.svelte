@@ -17,7 +17,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="cursor-pointer border-b border-solid border-b-[#ddd] p-2.5 hover:bg-[#e1effa] active:bg-[#d1e3f0]"
+	class="cursor-pointer border-b border-b-[#ddd] p-2.5 hover:bg-[#e1effa] active:bg-[#d1e3f0]"
 	data-role="account"
 	{onclick}
 >
