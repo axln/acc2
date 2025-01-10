@@ -38,7 +38,7 @@
 	</div>
 
 	<div class="m-[10px]">
-		<Button class="w-full p-[5px]" type="submit">
+		<Button class="w-full" type="submit">
 			{#if currencyDoc}
 				Save
 			{:else}

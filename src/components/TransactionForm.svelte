@@ -217,7 +217,7 @@
 	/>
 
 	<div>
-		<Button class="mt-[10px] w-full p-[5px]" type="submit">
+		<Button class="mt-[10px] w-full" type="submit">
 			{transactionDoc ? 'Save' : 'Create'}
 		</Button>
 	</div>

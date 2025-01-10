@@ -5,8 +5,8 @@
 	import InputBox from '~/components/controls/InputBox.svelte';
 	import Button from '~/components/controls/Button.svelte';
 	import { parseRate, validateRate } from '~/lib/utils';
-	import { useStore } from '~/lib/store';
 	import { baseCurrencyName } from '~/lib/const';
+	import { useStore } from '~/lib/store';
 
 	const { baseCurrencyCode, rates, currencies } = useStore();
 
@@ -93,6 +93,6 @@
 	{/each}
 
 	<div class="!mt-[20px]">
-		<Button class="mt-[10px] w-full p-[5px]" type="submit">Save</Button>
+		<Button class="mt-[10px] w-full" type="submit">Save</Button>
 	</div>
 </form>

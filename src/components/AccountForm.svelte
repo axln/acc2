@@ -69,7 +69,7 @@
 	</div>
 
 	<div>
-		<Button class="w-full p-[5px]" type="submit" disabled={adding}>
+		<Button class="w-full" type="submit" disabled={adding}>
 			{#if account}
 				Save
 			{:else}

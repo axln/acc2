@@ -34,7 +34,7 @@
 	</div>
 
 	<div>
-		<Button class="w-full p-[5px]" type="submit">
+		<Button class="w-full" type="submit">
 			{#if categoryDoc}
 				Save
 			{:else}
