@@ -59,7 +59,7 @@
 
 	<div>
 		<InputBox
-			class="w-full text-[length:inherit]"
+			class="w-full"
 			type="text"
 			bind:value={title}
 			focus

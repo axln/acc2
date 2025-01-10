@@ -139,11 +139,7 @@
 	</div>
 
 	<div class="flex gap-[10px]">
-		<InputBox
-			class="w-full p-1 font-mono outline-none"
-			type="datetime-local"
-			bind:value={datetime}
-		/>
+		<InputBox class="w-full font-mono outline-none" type="datetime-local" bind:value={datetime} />
 
 		<Button
 			class="w-[80px]"

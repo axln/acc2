@@ -10,9 +10,7 @@
 	let { accountGroups, groupId = $bindable() }: Props = $props();
 </script>
 
-<Select class="w-full p-[5px] invalid:text-[#aaa]" bind:value={groupId} required>
-	<option value="" disabled selected hidden>Account Group</option>
-
+<Select class="w-full" bind:value={groupId} placeholder="Account Group" required>
 	{#each accountGroups as group}
 		<option value={group.id}>{group.title}</option>
 	{/each}

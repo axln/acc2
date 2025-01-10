@@ -32,9 +32,7 @@
 	);
 </script>
 
-<Select class="w-full py-[7px] invalid:text-gray-400" bind:value={accountId} required>
-	<option value="" disabled selected hidden>{placeholder}</option>
-
+<Select class="w-full" bind:value={accountId} {placeholder} required>
 	{#each accountsByGroup as g}
 		<optgroup label={g.title}>
 			{#each g.accounts as a}

@@ -16,12 +16,11 @@
 
 <Select
 	{...rest}
-	class={['w-full py-[7px] text-[length:inherit] invalid:text-[#aaa]', rest.class]}
+	class={['w-full', rest.class]}
 	bind:value={currencyCode}
+	placeholder="Currency"
 	required
 >
-	<option value="" disabled selected hidden>Currency</option>
-
 	{#each $currencies as { code, title } (code)}}
 		<option value={code}>{code} {title}</option>
 	{/each}

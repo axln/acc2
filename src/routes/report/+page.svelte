@@ -11,7 +11,7 @@
 	const { baseCurrencyCode, rates } = useStore();
 
 	let { data } = $props();
-	console.log('report data:', data);
+	// console.log('report data:', data);
 
 	const now = new Date();
 	let monthYear = $state(

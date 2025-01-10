@@ -66,7 +66,7 @@
 >
 	{#snippet caption()}
 		<InputBox
-			class="w-full rounded-sm border border-gray-500 p-[5px] text-inherit outline-none"
+			class="w-full text-inherit outline-none"
 			type="text"
 			bind:value
 			placeholder="Category"
