@@ -14,13 +14,7 @@
 	$inspect($currencies);
 </script>
 
-<Select
-	{...rest}
-	class={['w-full', rest.class]}
-	bind:value={currencyCode}
-	placeholder="Currency"
-	required
->
+<Select {...rest} class={['w-full', rest.class]} bind:value={currencyCode} required>
 	{#each $currencies as { code, title } (code)}}
 		<option value={code}>{code} {title}</option>
 	{/each}

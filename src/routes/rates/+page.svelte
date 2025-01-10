@@ -60,8 +60,7 @@
 		});
 
 		$baseCurrencyCode = baseCode;
-		const newRates = await updateRates(rateDocs, baseCode);
-		$rates = newRates;
+		$rates = await updateRates(rateDocs, baseCode);
 		goto('/#/');
 	}
 </script>

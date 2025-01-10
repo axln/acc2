@@ -54,7 +54,7 @@
 	</div>
 
 	<div>
-		<CurrencySelect bind:currencyCode />
+		<CurrencySelect bind:currencyCode placeholder="Currency" />
 	</div>
 
 	<div>

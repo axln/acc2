@@ -394,6 +394,8 @@ export async function updateSettings(settingsDoc: SettingsDoc) {
 }
 
 export async function updateRates(rateDocs: RateDoc[], baseCurrencyCode: string) {
+	await initDb();
+
 	const newRates: Record<string, number> = {};
 	await db.delete('rates', baseCurrencyCode);
 	await Promise.all(
