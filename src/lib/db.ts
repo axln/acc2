@@ -121,7 +121,7 @@ export async function getRates() {
 }
 
 export async function getEntries(accountId: string, reverse = true) {
-	console.log('Getting entries...');
+	// console.log('Getting entries...');
 	await initDb();
 	const entryDocs = await db.getAllFromIndex('entries', 'accountId', accountId);
 	return entryDocs.sort((a, b) => {
@@ -173,6 +173,8 @@ export async function getCurrencies(): Promise<CurrencyDoc[]> {
 }
 
 export async function createTransaction(params: TransactionParams) {
+	await initDb();
+
 	const tx = db.transaction(['entries', 'transactions'], 'readwrite');
 	const entriesStore = tx.objectStore('entries');
 	const transactionsStore = tx.objectStore('transactions');
@@ -191,17 +193,17 @@ export async function createTransaction(params: TransactionParams) {
 		tx.done
 	]);
 
-	const [changed1, changed2] = await Promise.all([
+	await Promise.all([
 		recalcBalance(transactionDoc.accountId),
 		transactionDoc.secondAccountId ? recalcBalance(transactionDoc.secondAccountId) : false
 	]);
-	/* if (changed1 || changed2) {
-		accounts.set(await getAccounts());
-	} */
+
 	return transactionDoc;
 }
 
 export async function recalcBalance(accountId: string) {
+	await initDb();
+
 	const entries = await getEntries(accountId, false);
 	let total = 0;
 	for (const entry of entries) {
@@ -302,6 +304,7 @@ export async function updateTransaction(
 	newParams: TransactionParams
 ) {
 	await initDb();
+
 	const [prevEntryDoc, prevSecondEntryDoc] = await Promise.all([
 		db.get('entries', prevTransactionDoc.entryId),
 		prevTransactionDoc.secondEntryId ? db.get('entries', prevTransactionDoc.secondEntryId) : null
@@ -329,7 +332,7 @@ export async function updateTransaction(
 				: null
 	]);
 
-	const [changed1, changed2] = await Promise.all([
+	await Promise.all([
 		recalcBalance(transactionDoc.accountId),
 		transactionDoc.secondAccountId ? recalcBalance(transactionDoc.secondAccountId) : null,
 		prevTransactionDoc.secondAccountId &&
@@ -337,10 +340,6 @@ export async function updateTransaction(
 			? recalcBalance(prevTransactionDoc.secondAccountId)
 			: null
 	]);
-
-	/* if (changed1 || changed2) {
-		 accounts.set(await getAccounts());
-	} */
 }
 
 export async function deleteTransaction(id: string) {
