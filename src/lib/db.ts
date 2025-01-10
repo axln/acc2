@@ -531,3 +531,14 @@ export async function restoreSnapshot(snapshot: DBSnapshot) {
 		return false;
 	}
 }
+
+export async function getTransactions(start: number, end: number) {
+	await initDb();
+
+	const transactionDocs = await db.getAllFromIndex(
+		'transactions',
+		'timestamp',
+		IDBKeyRange.bound(start, end, false, true)
+	);
+	return transactionDocs;
+}
