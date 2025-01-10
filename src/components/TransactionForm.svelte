@@ -4,16 +4,15 @@
 	import KindSelect from './controls/KindSelect.svelte';
 	import Button from './controls/Button.svelte';
 	import AccountSelect from './AccountSelect.svelte';
+	import CategoryCombo from './CategoryCombo.svelte';
+	import InputBox from './controls/InputBox.svelte';
+	import Keypad from './Keypad.svelte';
 	import {
 		formatAmount,
 		getLocalCustomISODateString,
 		validateAmount,
 		parseAmount
 	} from '~/lib/utils';
-	import CategoryCombo from './CategoryCombo.svelte';
-	import InputBox from './controls/InputBox.svelte';
-	import { focus } from '~/lib/actions/focus';
-	import Keypad from './Keypad.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
@@ -36,11 +35,12 @@
 			new Date(transactionDoc?.timestamp || defaultTimestamp || Date.now())
 		)
 	);
-	$inspect(datetime);
+
+	// $inspect(datetime);
+
 	let categoryId: string | undefined = $state(transactionDoc?.categoryId);
 	let secondAccountId: string | undefined = $state(transactionDoc?.secondAccountId);
 	let categoryValue = $state('');
-
 	let amount = $state(transactionDoc ? formatAmount(transactionDoc.amount) : '');
 	let secondAmount: string = $state(
 		transactionDoc?.secondAmount ? formatAmount(transactionDoc.secondAmount) : ''
@@ -139,8 +139,8 @@
 	</div>
 
 	<div class="flex gap-[10px]">
-		<input
-			class="w-full rounded-sm border border-gray-500 p-1 font-mono text-inherit outline-none"
+		<InputBox
+			class="w-full p-1 font-mono outline-none"
 			type="datetime-local"
 			bind:value={datetime}
 		/>
@@ -161,6 +161,7 @@
 			<CategoryCombo bind:this={categoryCombo} bind:categoryId bind:value={categoryValue} />
 			<Button
 				class="w-[80px]"
+				type="button"
 				onclick={() => {
 					categoryCombo?.clear();
 				}}>Clear</Button

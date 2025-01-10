@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { CategoryDoc } from '~/type';
 	import DropDown from './controls/DropDown.svelte';
+	import InputBox from './controls/InputBox.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
@@ -30,7 +31,6 @@
 	});
 
 	let dropdown: DropDown;
-	let input: HTMLInputElement;
 
 	function getCategoryTitle(categoryId: string) {
 		const category = $categories.find((c) => c.id === categoryId);
@@ -65,27 +65,28 @@
 	bind:this={dropdown}
 >
 	{#snippet caption()}
-		<input
+		<InputBox
 			class="w-full rounded-sm border border-gray-500 p-[5px] text-inherit outline-none"
 			type="text"
-			bind:this={input}
 			bind:value
 			placeholder="Category"
 			oninput={() => {
+				// console.log('value:', value);
 				const category = $categories.find(
-					(c) => input.value.trim().toLocaleLowerCase() === formatTitle(c).toLocaleLowerCase()
+					(c) => value.trim().toLocaleLowerCase() === formatTitle(c).toLocaleLowerCase()
 				);
 				if (category) {
 					categoryId = category.id;
-					input.value = formatTitle(category);
-					filter = true;
+					value = formatTitle(category);
+					filter = false;
 				} else {
 					categoryId = '';
-					filter = false;
+					filter = true;
 				}
 			}}
 		/>
 	{/snippet}
+
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions-->
 	<ul
