@@ -25,6 +25,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{data.account.title}: Transaction - Acc</title>
+</svelte:head>
+
 <Header
 	title="{data.account.title}: Transaction"
 	returnPath="/#/accounts/{data.account.id}"

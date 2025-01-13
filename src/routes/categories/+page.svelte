@@ -6,7 +6,12 @@
 	const { categories } = useStore();
 </script>
 
+<svelte:head>
+	<title>Categories - Acc</title>
+</svelte:head>
+
 <Header title="Categories" returnPath="/#/" addPath="/#/categories/new" />
+
 {#each $categories as c (c.id)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->

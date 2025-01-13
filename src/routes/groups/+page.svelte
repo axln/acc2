@@ -5,6 +5,10 @@
 	let { data } = $props();
 </script>
 
+<svelte:head>
+	<title>Account Groups - Acc</title>
+</svelte:head>
+
 <Header title="Account Groups" returnPath="/#/" addPath="/#/groups/new" />
 
 {#each data.accountGroups as accountGroup (accountGroup.id)}

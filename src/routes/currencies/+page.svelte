@@ -6,6 +6,10 @@
 	const { currencies } = useStore();
 </script>
 
+<svelte:head>
+	<title>Currencies - Acc</title>
+</svelte:head>
+
 <Header title="Currencies" returnPath="/#/" addPath="/#/currencies/new" />
 
 {#each $currencies as c (c.code)}

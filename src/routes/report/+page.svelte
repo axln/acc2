@@ -139,6 +139,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Report - Acc</title>
+</svelte:head>
+
 <Header title="Report" returnPath="/#/" />
 
 <div class="p-[10px]">

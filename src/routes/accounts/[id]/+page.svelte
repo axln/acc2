@@ -54,6 +54,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{data.account.title} - Acc</title>
+</svelte:head>
+
 <Header
 	title={data.account.title}
 	returnPath="/#/"

@@ -17,6 +17,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>New Account - Acc</title>
+</svelte:head>
+
 <Header title="New Account" returnPath="/#/" />
 
 <AccountForm class="m-2.5" accountGroups={data.accountGroups} {onsave} />

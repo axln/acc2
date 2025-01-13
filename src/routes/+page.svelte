@@ -94,6 +94,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Accounts - Acc</title>
+</svelte:head>
+
 <Header title="Accounts" addPath="/#/accounts/new" {menuItems} {onmenu} />
 
 {#each data.accountGroups as accountGroup}

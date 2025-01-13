@@ -65,6 +65,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Rates - Acc</title>
+</svelte:head>
+
 <Header title="Rates" returnPath="/#/" />
 
 <form class="m-[10px] space-y-[10px]" {onsubmit}>
