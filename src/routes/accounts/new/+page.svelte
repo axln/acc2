@@ -10,7 +10,7 @@
 		const { createAccount } = await import('~/lib/db');
 		try {
 			await createAccount(title, groupId, currencyCode);
-			goto('/');
+			goto('#/');
 		} catch (err) {
 			console.error('Failed to create account:', err);
 		}

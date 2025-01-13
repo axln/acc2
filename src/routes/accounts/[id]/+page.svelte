@@ -3,9 +3,10 @@
 </script>
 
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { EntryDoc } from '~/type.js';
-	import { formatDate, formatAmount } from '~/lib/utils';
+	import { formatAmount } from '~/lib/utils';
 	import Header from '~/components/Header.svelte';
 	import Entry from './Entry.svelte';
 
@@ -20,31 +21,13 @@
 		}
 	]);
 
-	let lastTimestamp = $derived(data.entries?.length > 0 ? data.entries[0].timestamp + 60000 : null);
-	// $inspect(lastTimestamp);
-
-	$effect(() => {
+	tick().then(() => {
 		if (scrollTop) {
 			document.documentElement.scrollTop = scrollTop;
+			console.log('scrolltop restored:', scrollTop);
 		}
 		scrollTop = null;
 	});
-
-	let entriesByDays = $derived(
-		data.entries.reduce(
-			(acc, entry) => {
-				const title = formatDate(entry.timestamp);
-
-				if (acc[title]) {
-					acc[title].push(entry);
-				} else {
-					acc[title] = [entry];
-				}
-				return acc;
-			},
-			{} as Record<string, EntryDoc[]>
-		)
-	);
 
 	function getDayTotal(entries: EntryDoc[]) {
 		return entries.reduce((acc, item) => {
@@ -61,23 +44,26 @@
 <Header
 	title={data.account.title}
 	returnPath="#/"
-	addPath="#/accounts/{data.account.id}/transactions/new{lastTimestamp
-		? `?t=${lastTimestamp}`
+	addPath="#/accounts/{data.account.id}/transactions/new{data.lastTimestamp
+		? `?t=${data.lastTimestamp}`
 		: ''}"
 	{menuItems}
 />
 
-{#each Object.keys(entriesByDays) as dayKey}
+{#each Object.keys(data.entriesByDays) as dayKey}
 	<div class="flex gap-2.5 border-b border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0">
 		<span class="flex-auto font-bold">{dayKey}</span>
-		<span class="flex-none">{formatAmount(getDayTotal(entriesByDays[dayKey]), true, true)}</span>
+		<span class="flex-none"
+			>{formatAmount(getDayTotal(data.entriesByDays[dayKey]), true, true)}</span
+		>
 	</div>
 
-	{#each entriesByDays[dayKey] as entry (entry.id)}
+	{#each data.entriesByDays[dayKey] as entry (entry.id)}
 		<Entry
 			{entry}
 			ontransaction={(id: string) => {
 				scrollTop = document.documentElement.scrollTop;
+				console.log('scrollTop saved:', scrollTop);
 				goto(`#/accounts/${data.account.id}/transactions/${id}`);
 			}}
 		/>
