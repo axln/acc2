@@ -6,7 +6,7 @@
 	async function onsave(params: { title: string; currencyCode: string }) {
 		const { createAccountGroup } = await import('~/lib/db');
 		await createAccountGroup(params.title, params.currencyCode);
-		goto('/#/groups');
+		goto('#/groups');
 	}
 </script>
 
@@ -14,6 +14,6 @@
 	<title>New Account Group - Acc</title>
 </svelte:head>
 
-<Header title="New Account Group" returnPath="/#/groups" />
+<Header title="New Account Group" returnPath="#/groups" />
 
 <AccountGroupForm {onsave} />

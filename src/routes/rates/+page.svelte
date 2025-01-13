@@ -61,7 +61,7 @@
 
 		$baseCurrencyCode = baseCode;
 		$rates = await updateRates(rateDocs, baseCode);
-		goto('/#/');
+		goto('#/');
 	}
 </script>
 
@@ -69,7 +69,7 @@
 	<title>Rates - Acc</title>
 </svelte:head>
 
-<Header title="Rates" returnPath="/#/" />
+<Header title="Rates" returnPath="#/" />
 
 <form class="m-[10px] space-y-[10px]" {onsubmit}>
 	<div>

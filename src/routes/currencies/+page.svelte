@@ -10,7 +10,7 @@
 	<title>Currencies - Acc</title>
 </svelte:head>
 
-<Header title="Currencies" returnPath="/#/" addPath="/#/currencies/new" />
+<Header title="Currencies" returnPath="#/" addPath="#/currencies/new" />
 
 {#each $currencies as c (c.code)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -21,7 +21,7 @@
 		data-code={c.code}
 		onclick={(e) => {
 			if (e.currentTarget.dataset.code) {
-				goto(`/#/currencies/${e.currentTarget.dataset.code}`);
+				goto(`#/currencies/${e.currentTarget.dataset.code}`);
 			}
 		}}
 	>

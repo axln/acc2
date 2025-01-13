@@ -143,7 +143,7 @@
 	<title>Report - Acc</title>
 </svelte:head>
 
-<Header title="Report" returnPath="/#/" />
+<Header title="Report" returnPath="#/" />
 
 <div class="p-[10px]">
 	<InputBox class="w-full" type="month" bind:value={monthYear} />

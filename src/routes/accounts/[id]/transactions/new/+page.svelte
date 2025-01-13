@@ -11,7 +11,7 @@
 		const { createTransaction } = await import('~/lib/db');
 		const doc = await createTransaction(params);
 		// console.log('transaction created:', doc);
-		goto(`/#/accounts/${data.account.id}`);
+		goto(`#/accounts/${data.account.id}`);
 	}
 </script>
 
@@ -19,7 +19,7 @@
 	<title>{data.account.title}: New Transaction - Acc</title>
 </svelte:head>
 
-<Header title="{data.account.title}: New Transaction" returnPath="/#/accounts/{data.account.id}" />
+<Header title="{data.account.title}: New Transaction" returnPath="#/accounts/{data.account.id}" />
 
 <TransactionForm
 	account={data.account}

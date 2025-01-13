@@ -16,7 +16,7 @@
 		{
 			id: 'edit',
 			title: 'Edit',
-			to: `/#/accounts/${data.account.id}/edit`
+			to: `#/accounts/${data.account.id}/edit`
 		}
 	]);
 
@@ -60,8 +60,8 @@
 
 <Header
 	title={data.account.title}
-	returnPath="/#/"
-	addPath="/#/accounts/{data.account.id}/transactions/new{lastTimestamp
+	returnPath="#/"
+	addPath="#/accounts/{data.account.id}/transactions/new{lastTimestamp
 		? `?t=${lastTimestamp}`
 		: ''}"
 	{menuItems}
@@ -78,7 +78,7 @@
 			{entry}
 			ontransaction={(id: string) => {
 				scrollTop = document.documentElement.scrollTop;
-				goto(`/#/accounts/${data.account.id}/transactions/${id}`);
+				goto(`#/accounts/${data.account.id}/transactions/${id}`);
 			}}
 		/>
 	{/each}

@@ -9,7 +9,7 @@
 	<title>Account Groups - Acc</title>
 </svelte:head>
 
-<Header title="Account Groups" returnPath="/#/" addPath="/#/groups/new" />
+<Header title="Account Groups" returnPath="#/" addPath="#/groups/new" />
 
 {#each data.accountGroups as accountGroup (accountGroup.id)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -19,7 +19,7 @@
 		data-id={accountGroup.id}
 		onclick={(e) => {
 			if (e.currentTarget.dataset.id) {
-				goto(`/#/groups/${e.currentTarget.dataset.id}`);
+				goto(`#/groups/${e.currentTarget.dataset.id}`);
 			}
 		}}
 	>

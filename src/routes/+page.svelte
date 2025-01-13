@@ -3,27 +3,27 @@
 		{
 			id: 'groups',
 			title: 'Account Groups',
-			to: '/#/groups'
+			to: '#/groups'
 		},
 		{
 			id: 'category',
 			title: 'Categories',
-			to: '/#/categories'
+			to: '#/categories'
 		},
 		{
 			id: 'report',
 			title: 'Report',
-			to: '/#/report'
+			to: '#/report'
 		},
 		{
 			id: 'currency',
 			title: 'Currencies',
-			to: '/#/currencies'
+			to: '#/currencies'
 		},
 		{
 			id: 'rates',
 			title: 'Rates',
-			to: '/#/rates'
+			to: '#/rates'
 		},
 		{
 			id: 'backup',
@@ -98,7 +98,7 @@
 	<title>Accounts - Acc</title>
 </svelte:head>
 
-<Header title="Accounts" addPath="/#/accounts/new" {menuItems} {onmenu} />
+<Header title="Accounts" addPath="#/accounts/new" {menuItems} {onmenu} />
 
 {#each data.accountGroups as accountGroup}
 	<AccountGroup {accountGroup} accounts={data.accounts} />

@@ -15,7 +15,7 @@
 			subtitle: subtitle || ''
 		});
 		$categories = await getCategories();
-		goto(`/#/categories`);
+		goto(`#/categories`);
 	}
 </script>
 
@@ -23,6 +23,6 @@
 	<title>Category - Acc</title>
 </svelte:head>
 
-<Header title="Category" returnPath="/#/categories" />
+<Header title="Category" returnPath="#/categories" />
 
 <CategoryForm categoryDoc={data.categoryDoc} {onsave} />

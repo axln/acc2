@@ -11,7 +11,7 @@
 			id: data.accountGroup.id,
 			...params
 		});
-		goto('/#/groups');
+		goto('#/groups');
 	}
 </script>
 
@@ -19,6 +19,6 @@
 	<title>Account Group - Acc</title>
 </svelte:head>
 
-<Header title="Account Group" returnPath="/#/groups" />
+<Header title="Account Group" returnPath="#/groups" />
 
 <AccountGroupForm accountGroup={data.accountGroup} {onsave} />

@@ -20,7 +20,7 @@
 	);
 
 	function onaccount(id: string) {
-		goto(`/#/accounts/${id}`);
+		goto(`#/accounts/${id}`);
 	}
 </script>
 

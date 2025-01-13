@@ -12,14 +12,14 @@
 	async function onsave(params: TransactionParams) {
 		const { updateTransaction } = await import('~/lib/db');
 		await updateTransaction(data.transactionDoc, params);
-		goto(`/#/accounts/${data.transactionDoc.accountId}`);
+		goto(`#/accounts/${data.transactionDoc.accountId}`);
 	}
 
 	async function onmenu(id: string) {
 		if (id === 'delete') {
 			if (confirm('Delete transaction?')) {
 				await deleteTransaction(data.transactionDoc.id);
-				goto(`/#/accounts/${data.transactionDoc.accountId}`);
+				goto(`#/accounts/${data.transactionDoc.accountId}`);
 			}
 		}
 	}
@@ -31,7 +31,7 @@
 
 <Header
 	title="{data.account.title}: Transaction"
-	returnPath="/#/accounts/{data.account.id}"
+	returnPath="#/accounts/{data.account.id}"
 	menuItems={[
 		{
 			id: 'delete',

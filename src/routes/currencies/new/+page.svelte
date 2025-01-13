@@ -10,7 +10,7 @@
 		const { createCurrency, getCurrencies } = await import('~/lib/db');
 		await createCurrency(code, title);
 		$currencies = await getCurrencies();
-		goto('/#/currencies');
+		goto('#/currencies');
 	}
 </script>
 
@@ -18,6 +18,6 @@
 	<title>New Currency - Acc</title>
 </svelte:head>
 
-<Header title="New Currency" returnPath="/#/currencies" />
+<Header title="New Currency" returnPath="#/currencies" />
 
 <CurrencyForm {onsave} />

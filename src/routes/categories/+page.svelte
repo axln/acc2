@@ -10,7 +10,7 @@
 	<title>Categories - Acc</title>
 </svelte:head>
 
-<Header title="Categories" returnPath="/#/" addPath="/#/categories/new" />
+<Header title="Categories" returnPath="#/" addPath="#/categories/new" />
 
 {#each $categories as c (c.id)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -20,7 +20,7 @@
 		data-id={c.id}
 		onclick={(e) => {
 			if (e.currentTarget.dataset.id) {
-				goto(`/#/categories/${e.currentTarget.dataset.id}`);
+				goto(`#/categories/${e.currentTarget.dataset.id}`);
 			}
 		}}
 	>

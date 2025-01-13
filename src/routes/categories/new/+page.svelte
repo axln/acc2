@@ -10,7 +10,7 @@
 		const { createCategory, getCategories } = await import('~/lib/db');
 		await createCategory(title, subtitle || '');
 		$categories = await getCategories();
-		goto(`/#/categories`);
+		goto(`#/categories`);
 	}
 </script>
 
@@ -18,6 +18,6 @@
 	<title>New Category - Acc</title>
 </svelte:head>
 
-<Header title="New Category" returnPath="/#/categories" />
+<Header title="New Category" returnPath="#/categories" />
 
 <CategoryForm {onsave} />
