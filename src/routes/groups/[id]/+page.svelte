@@ -15,6 +15,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Account Group - Acc</title>
+</svelte:head>
+
 <Header title="Account Group" returnPath="/#/groups" />
 
 <AccountGroupForm accountGroup={data.accountGroup} {onsave} />

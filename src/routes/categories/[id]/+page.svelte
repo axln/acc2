@@ -19,6 +19,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Category - Acc</title>
+</svelte:head>
+
 <Header title="Category" returnPath="/#/categories" />
 
 <CategoryForm categoryDoc={data.categoryDoc} {onsave} />

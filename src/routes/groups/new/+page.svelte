@@ -10,6 +10,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>New Account Group - Acc</title>
+</svelte:head>
+
 <Header title="New Account Group" returnPath="/#/groups" />
 
 <AccountGroupForm {onsave} />

@@ -20,6 +20,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Currency - Acc</title>
+</svelte:head>
+
 <Header title="Currency" returnPath="/#/currencies" />
 
 <CurrencyForm currencyDoc={data.currencyDoc} {onsave} />

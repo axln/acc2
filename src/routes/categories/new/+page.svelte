@@ -14,6 +14,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>New Category - Acc</title>
+</svelte:head>
+
 <Header title="New Category" returnPath="/#/categories" />
 
 <CategoryForm {onsave} />
