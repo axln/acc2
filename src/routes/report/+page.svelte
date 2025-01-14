@@ -145,7 +145,7 @@
 
 <Header title="Report" returnPath="#/" />
 
-<div class="p-[10px]">
+<div class="border-b border-gray-300 p-[10px]">
 	<InputBox class="w-full" type="month" bind:value={monthYear} />
 </div>
 
@@ -182,18 +182,18 @@
 			{#each displayDocs as doc}
 				<div class="border-b border-[#ddd] p-[5px_10px]">
 					<div class="flex">
-						<span
-							>{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
-								.accountById[doc.accountId].title}</span
-						>
-						<span class="ml-auto">
+						<span>
+							{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
+								.accountById[doc.accountId].title}
+						</span>
+						<span class={['ml-auto', doc.kind === TransactionKind.Income && 'text-[green]']}>
 							{formatAmount(
 								doc.kind === TransactionKind.Expense ? -doc.amount : doc.amount,
 								true,
 								true
 							)}
+							{data.accountById[doc.accountId]?.currencyCode}
 						</span>
-						<span>{data.accountById[doc.accountId]?.currencyCode}</span>
 					</div>
 					<div class="flex items-center gap-[10px]">
 						{#if doc.categoryId}

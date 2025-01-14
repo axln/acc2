@@ -30,8 +30,8 @@
 {#each line.sorted as subline}
 	<div
 		class={[
-			'flex gap-[10px] border-t border-[#ddd] px-[10px]',
-			header ? 'bg-[#f4f4f8]' : 'py-[5px]',
+			'flex gap-[10px] border-b border-gray-300 px-[10px]',
+			header ? 'bg-[#f4f4f8] font-bold text-gray-500' : 'py-[5px]',
 			nested && 'pl-[20px]'
 		]}
 		onclick={() => {
