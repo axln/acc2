@@ -1,41 +1,3 @@
-<script module>
-	const menuItems = [
-		{
-			id: 'groups',
-			title: 'Account Groups',
-			to: '#/groups'
-		},
-		{
-			id: 'category',
-			title: 'Categories',
-			to: '#/categories'
-		},
-		{
-			id: 'report',
-			title: 'Report',
-			to: '#/report'
-		},
-		{
-			id: 'currency',
-			title: 'Currencies',
-			to: '#/currencies'
-		},
-		{
-			id: 'rates',
-			title: 'Rates',
-			to: '#/rates'
-		},
-		{
-			id: 'backup',
-			title: 'Backup'
-		},
-		{
-			id: 'restore',
-			title: 'Restore'
-		}
-	];
-</script>
-
 <script lang="ts">
 	import Header from '~/components/Header.svelte';
 	import AccountGroup from './AccountGroup.svelte';
@@ -47,8 +9,8 @@
 		getCurrencyRate,
 		safeJSONParse
 	} from '~/lib/utils';
-	import { useStore } from '~/lib/store.js';
 	import { getDBSnapshot, restoreSnapshot } from '~/lib/db';
+	import { useStore } from '~/lib/store.js';
 
 	const { baseCurrencyCode, rates } = useStore();
 
@@ -98,7 +60,46 @@
 	<title>Accounts - Acc</title>
 </svelte:head>
 
-<Header title="Accounts" addPath="#/accounts/new" {menuItems} {onmenu} />
+<Header
+	title="Accounts"
+	addPath="#/accounts/new"
+	menuItems={[
+		{
+			id: 'groups',
+			title: 'Account Groups',
+			to: '#/groups'
+		},
+		{
+			id: 'category',
+			title: 'Categories',
+			to: '#/categories'
+		},
+		{
+			id: 'report',
+			title: 'Report',
+			to: '#/report'
+		},
+		{
+			id: 'currency',
+			title: 'Currencies',
+			to: '#/currencies'
+		},
+		{
+			id: 'rates',
+			title: 'Rates',
+			to: '#/rates'
+		},
+		{
+			id: 'backup',
+			title: 'Backup'
+		},
+		{
+			id: 'restore',
+			title: 'Restore'
+		}
+	]}
+	{onmenu}
+/>
 
 {#each data.accountGroups as accountGroup}
 	<AccountGroup {accountGroup} accounts={data.accounts} />

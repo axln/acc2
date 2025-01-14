@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { AccountDoc, AccountGroupDoc } from '~/type';
-	import { useStore } from '~/lib/store.js';
-	import { formatAmount, getGroupBalance } from '~/lib/utils';
 	import Account from './Account.svelte';
+	import { formatAmount, getGroupBalance } from '~/lib/utils';
+	import { useStore } from '~/lib/store.js';
 
 	interface Props {
 		accountGroup: AccountGroupDoc;
@@ -18,19 +18,20 @@
 	let balance = $derived(
 		getGroupBalance(groupAccounts, accountGroup.currencyCode, $rates, $baseCurrencyCode)
 	);
-
-	function onaccount(id: string) {
-		goto(`#/accounts/${id}`);
-	}
 </script>
 
 <div>
-	<div class="flex border-b border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0 font-bold text-[#777]">
+	<div class="flex border-b border-gray-300 bg-gray-100 px-2.5 py-0 font-bold text-gray-500">
 		<span class="flex-auto">{accountGroup.title}</span>
 		<span>{formatAmount(balance, true)} {accountGroup.currencyCode}</span>
 	</div>
 
 	{#each groupAccounts as account (account.id)}
-		<Account {account} {onaccount} />
+		<Account
+			{account}
+			onaccount={(id) => {
+				goto(`#/accounts/${id}`);
+			}}
+		/>
 	{/each}
 </div>

@@ -6,34 +6,23 @@
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { EntryDoc } from '~/type.js';
-	import { formatAmount } from '~/lib/utils';
 	import Header from '~/components/Header.svelte';
 	import Entry from './Entry.svelte';
+	import { formatAmount } from '~/lib/utils';
 
 	let { data } = $props();
 	// console.log('account data:', data);
-
-	let menuItems = $derived([
-		{
-			id: 'edit',
-			title: 'Edit',
-			to: `#/accounts/${data.account.id}/edit`
-		}
-	]);
 
 	tick().then(() => {
 		if (scrollTop) {
 			document.documentElement.scrollTop = scrollTop;
 			console.log('scrolltop restored:', scrollTop);
+			scrollTop = null;
 		}
-		scrollTop = null;
 	});
 
-	function getDayTotal(entries: EntryDoc[]) {
-		return entries.reduce((acc, item) => {
-			acc += item.amount;
-			return acc;
-		}, 0);
+	function calcDayTotal(entries: EntryDoc[]) {
+		return entries.reduce((acc, item) => acc + item.amount, 0);
 	}
 </script>
 
@@ -47,14 +36,20 @@
 	addPath="#/accounts/{data.account.id}/transactions/new{data.lastTimestamp
 		? `?t=${data.lastTimestamp}`
 		: ''}"
-	{menuItems}
+	menuItems={[
+		{
+			id: 'edit',
+			title: 'Edit',
+			to: `#/accounts/${data.account.id}/edit`
+		}
+	]}
 />
 
 {#each Object.keys(data.entriesByDays) as dayKey}
-	<div class="flex gap-2.5 border-b border-b-[#ddd] bg-[#f4f4f8] px-2.5 py-0">
+	<div class="flex gap-2.5 border-b border-gray-300 bg-gray-100 px-2.5 py-0">
 		<span class="flex-auto font-bold">{dayKey}</span>
 		<span class="flex-none"
-			>{formatAmount(getDayTotal(data.entriesByDays[dayKey]), true, true)}</span
+			>{formatAmount(calcDayTotal(data.entriesByDays[dayKey]), true, true)}</span
 		>
 	</div>
 
@@ -62,8 +57,10 @@
 		<Entry
 			{entry}
 			ontransaction={(id: string) => {
-				scrollTop = document.documentElement.scrollTop;
-				console.log('scrollTop saved:', scrollTop);
+				if (document.documentElement.scrollTop) {
+					scrollTop = document.documentElement.scrollTop;
+					console.log('scrollTop saved:', scrollTop);
+				}
 				goto(`#/accounts/${data.account.id}/transactions/${id}`);
 			}}
 		/>
