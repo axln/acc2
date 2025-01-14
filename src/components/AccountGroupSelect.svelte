@@ -11,7 +11,7 @@
 </script>
 
 <Select class="w-full" bind:value={groupId} placeholder="Account Group" required>
-	{#each accountGroups as group}
-		<option value={group.id}>{group.title}</option>
+	{#each accountGroups as g}
+		<option value={g.id}>{g.title}</option>
 	{/each}
 </Select>

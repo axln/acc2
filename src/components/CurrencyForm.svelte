@@ -4,14 +4,14 @@
 	import Button from './controls/Button.svelte';
 
 	interface Props {
-		currencyDoc?: CurrencyDoc;
+		currency?: CurrencyDoc;
 		onsave(code: string, title: string): Promise<void>;
 	}
 
-	let { currencyDoc, onsave }: Props = $props();
+	let { currency, onsave }: Props = $props();
 
-	let code = $state(currencyDoc?.code || '');
-	let title = $state(currencyDoc?.title || '');
+	let code = $state(currency?.code || '');
+	let title = $state(currency?.title || '');
 
 	async function onsubmit(e: SubmitEvent) {
 		if (code.trim() && title.trim()) {
@@ -29,7 +29,7 @@
 			type="text"
 			bind:value={code}
 			placeholder="Code"
-			disabled={currencyDoc !== undefined}
+			disabled={currency !== undefined}
 		/>
 	</div>
 
@@ -39,7 +39,7 @@
 
 	<div class="m-[10px]">
 		<Button class="w-full" type="submit">
-			{#if currencyDoc}
+			{#if currency}
 				Save
 			{:else}
 				Add

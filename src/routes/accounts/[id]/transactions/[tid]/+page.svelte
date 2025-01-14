@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { TransactionParams } from '~/type.js';
 	import Header from '~/components/Header.svelte';
 	import TransactionForm from '~/components/TransactionForm.svelte';
-	import { deleteTransaction } from '~/lib/db.js';
-	import type { TransactionParams } from '~/type.js';
 
 	let { data } = $props();
 
@@ -11,15 +10,16 @@
 
 	async function onsave(params: TransactionParams) {
 		const { updateTransaction } = await import('~/lib/db');
-		await updateTransaction(data.transactionDoc, params);
-		goto(`#/accounts/${data.transactionDoc.accountId}`);
+		await updateTransaction(data.transaction, params);
+		goto(`#/accounts/${data.transaction.accountId}`);
 	}
 
 	async function onmenu(id: string) {
+		const { deleteTransaction } = await import('~/lib/db');
 		if (id === 'delete') {
 			if (confirm('Delete transaction?')) {
-				await deleteTransaction(data.transactionDoc.id);
-				goto(`#/accounts/${data.transactionDoc.accountId}`);
+				await deleteTransaction(data.transaction.id);
+				goto(`#/accounts/${data.transaction.accountId}`);
 			}
 		}
 	}
@@ -43,7 +43,7 @@
 
 <TransactionForm
 	account={data.account}
-	transactionDoc={data.transactionDoc}
+	transaction={data.transaction}
 	accountGroups={data.accountGroups}
 	accounts={data.accounts}
 	{onsave}

@@ -10,7 +10,7 @@
 	async function onsave(title: string, subtitle?: string) {
 		const { updateCategory, getCategories } = await import('~/lib/db');
 		await updateCategory({
-			...data.categoryDoc,
+			...data.category,
 			title,
 			subtitle: subtitle || ''
 		});
@@ -25,4 +25,4 @@
 
 <Header title="Category" returnPath="#/categories" />
 
-<CategoryForm categoryDoc={data.categoryDoc} {onsave} />
+<CategoryForm category={data.category} {onsave} />

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { AccountGroupDoc } from '~/type';
-	import CurrencySelect from '~/components/CurrencySelect.svelte';
 	import InputBox from '~/components/controls/InputBox.svelte';
 	import Button from '~/components/controls/Button.svelte';
+	import CurrencySelect from '~/components/CurrencySelect.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {

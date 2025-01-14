@@ -4,13 +4,13 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ params }) => {
 	const { getAccount, getAccountGroups } = await import('~/lib/db');
 
-	const accountDoc = await getAccount(params.id);
-	if (!accountDoc) {
+	const account = await getAccount(params.id);
+	if (!account) {
 		error(404, `Account ${params.id} not found`);
 	}
 
 	return {
-		accountDoc,
+		account,
 		accountGroups: await getAccountGroups()
 	};
 };

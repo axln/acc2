@@ -4,14 +4,14 @@
 	import Button from './controls/Button.svelte';
 
 	interface Props {
-		categoryDoc?: CategoryDoc;
+		category?: CategoryDoc;
 		onsave(title: string, subtitle?: string): Promise<void>;
 	}
 
-	let { categoryDoc, onsave }: Props = $props();
+	let { category, onsave }: Props = $props();
 
-	let title = $state(categoryDoc?.title || '');
-	let subtitle = $state(categoryDoc?.subtitle || '');
+	let title = $state(category?.title || '');
+	let subtitle = $state(category?.subtitle || '');
 </script>
 
 <form
@@ -35,7 +35,7 @@
 
 	<div>
 		<Button class="w-full" type="submit">
-			{#if categoryDoc}
+			{#if category}
 				Save
 			{:else}
 				Create

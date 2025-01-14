@@ -11,7 +11,7 @@
 	async function onsave(code: string, title: string) {
 		const { updateCurrency, getCurrencies } = await import('~/lib/db');
 		await updateCurrency({
-			...data.currencyDoc,
+			...data.currency,
 			code,
 			title
 		});
@@ -26,4 +26,4 @@
 
 <Header title="Currency" returnPath="#/currencies" />
 
-<CurrencyForm currencyDoc={data.currencyDoc} {onsave} />
+<CurrencyForm currency={data.currency} {onsave} />

@@ -8,10 +8,10 @@
 
 <script lang="ts">
 	import type { AccountDoc, AccountGroupDoc } from '~/type';
-	import AccountGroupSelect from './AccountGroupSelect.svelte';
-	import CurrencySelect from './CurrencySelect.svelte';
 	import InputBox from './controls/InputBox.svelte';
 	import Button from './controls/Button.svelte';
+	import AccountGroupSelect from './AccountGroupSelect.svelte';
+	import CurrencySelect from './CurrencySelect.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
@@ -28,7 +28,6 @@
 	let groupId = $state(account?.groupId || undefined);
 	let currencyCode = $state(account?.currencyCode || $baseCurrencyCode);
 	let title = $state(account?.title || '');
-
 	let adding = $state(false);
 </script>
 

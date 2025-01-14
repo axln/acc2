@@ -8,13 +8,13 @@
 	async function onsave(fields: AccountInfo) {
 		const { updateAccount } = await import('~/lib/db');
 		await updateAccount({
-			...data.accountDoc,
+			...data.account,
 			...fields
 		});
-		goto(`#/accounts/${data.accountDoc.id}`);
+		goto(`#/accounts/${data.account.id}`);
 	}
 </script>
 
-<Header title={data.accountDoc.title} returnPath="#/accounts/{data.accountDoc.id}" />
+<Header title={data.account.title} returnPath="#/accounts/{data.account.id}" />
 
-<AccountForm class="m-2.5" accountGroups={data.accountGroups} account={data.accountDoc} {onsave} />
+<AccountForm class="m-2.5" accountGroups={data.accountGroups} account={data.account} {onsave} />

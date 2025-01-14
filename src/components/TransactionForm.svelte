@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { AccountDoc, AccountGroupDoc, TransactionDoc, TransactionParams } from '~/type';
 	import { TransactionKind } from '~/lib/enum';
-	import KindSelect from './controls/KindSelect.svelte';
 	import Button from './controls/Button.svelte';
+	import InputBox from './controls/InputBox.svelte';
+	import KindSelect from './controls/KindSelect.svelte';
 	import AccountSelect from './AccountSelect.svelte';
 	import CategoryCombo from './CategoryCombo.svelte';
-	import InputBox from './controls/InputBox.svelte';
 	import Keypad from './Keypad.svelte';
 	import {
 		formatAmount,
@@ -17,7 +17,7 @@
 
 	interface Props {
 		account: AccountDoc;
-		transactionDoc?: TransactionDoc;
+		transaction?: TransactionDoc;
 		defaultTimestamp?: number;
 		accountGroups: AccountGroupDoc[];
 		accounts: AccountDoc[];
@@ -26,8 +26,14 @@
 
 	const { categories } = useStore();
 
-	let { account, transactionDoc, defaultTimestamp, accountGroups, accounts, onsave }: Props =
-		$props();
+	let {
+		account,
+		transaction: transactionDoc,
+		defaultTimestamp,
+		accountGroups,
+		accounts,
+		onsave
+	}: Props = $props();
 
 	let kind: TransactionKind = $state(transactionDoc?.kind || TransactionKind.Expense);
 	let datetime = $state(
