@@ -63,6 +63,7 @@ const dbPromise = openDB<AccDB>('acc', 3, {
 	}
 }).then((dbInstance) => {
 	db = dbInstance;
+	// console.log('DB initialized');
 });
 
 export async function initDb() {
@@ -70,33 +71,27 @@ export async function initDb() {
 }
 
 export async function getAccountGroups() {
-	await initDb();
 	return db.getAllFromIndex('accountGroups', 'title');
 }
 
 export async function getAccountGroup(id: string) {
-	await initDb();
 	return db.get('accountGroups', id);
 }
 
 export async function getAccounts() {
 	// console.log('gettting accounts...');
-	await initDb();
 	return db.getAllFromIndex('accounts', 'title');
 }
 
 export async function getAccount(id: string) {
-	await initDb();
 	return db.get('accounts', id);
 }
 
 export async function getTransaction(id: string) {
-	await initDb();
 	return db.get('transactions', id);
 }
 
 export async function getBaseCurrencyCode() {
-	await initDb();
 	const settingsDocs = await db.getAll('settings');
 	for (const settingsDoc of settingsDocs) {
 		if (settingsDoc.name === baseCurrencyName) {
@@ -108,7 +103,6 @@ export async function getBaseCurrencyCode() {
 }
 
 export async function getRates() {
-	await initDb();
 	const rateDocs = await db.getAll('rates');
 	return rateDocs.reduce(
 		(acc, rateDoc) => {
@@ -121,7 +115,6 @@ export async function getRates() {
 
 export async function getEntries(accountId: string, reverse = true) {
 	// console.log('Getting entries...');
-	await initDb();
 	const entryDocs = await db.getAllFromIndex('entries', 'accountId', accountId);
 	return entryDocs.sort((a, b) => {
 		const cmp = a.timestamp - b.timestamp;
@@ -130,12 +123,10 @@ export async function getEntries(accountId: string, reverse = true) {
 }
 
 export async function getCategories() {
-	await initDb();
 	return db.getAllFromIndex('categories', 'title');
 }
 
 export async function createCategory(title: string, subtitle: string) {
-	await initDb();
 	const cat = {
 		id: nanoid(5),
 		title,
@@ -146,12 +137,10 @@ export async function createCategory(title: string, subtitle: string) {
 }
 
 export async function updateCategory(categoryDoc: CategoryDoc) {
-	await initDb();
 	await db.put('categories', categoryDoc);
 }
 
 export async function createAccount(title: string, groupId: string, currencyCode: string) {
-	await initDb();
 	await db.put('accounts', {
 		id: nanoid(5),
 		title,
@@ -162,18 +151,14 @@ export async function createAccount(title: string, groupId: string, currencyCode
 }
 
 export async function updateAccount(accountDoc: AccountDoc) {
-	await initDb();
 	await db.put('accounts', accountDoc);
 }
 
 export async function getCurrencies(): Promise<CurrencyDoc[]> {
-	await initDb();
 	return db.getAll('currencies');
 }
 
 export async function createTransaction(params: TransactionParams) {
-	await initDb();
-
 	const tx = db.transaction(['entries', 'transactions'], 'readwrite');
 	const entriesStore = tx.objectStore('entries');
 	const transactionsStore = tx.objectStore('transactions');
@@ -201,8 +186,6 @@ export async function createTransaction(params: TransactionParams) {
 }
 
 export async function recalcBalance(accountId: string) {
-	await initDb();
-
 	const entries = await getEntries(accountId, false);
 	let total = 0;
 	for (const entry of entries) {
@@ -302,8 +285,6 @@ export async function updateTransaction(
 	prevTransactionDoc: TransactionDoc,
 	newParams: TransactionParams
 ) {
-	await initDb();
-
 	const [prevEntryDoc, prevSecondEntryDoc] = await Promise.all([
 		db.get('entries', prevTransactionDoc.entryId),
 		prevTransactionDoc.secondEntryId ? db.get('entries', prevTransactionDoc.secondEntryId) : null
@@ -342,7 +323,6 @@ export async function updateTransaction(
 }
 
 export async function deleteTransaction(id: string) {
-	await initDb();
 	const transactionDoc = await db.get('transactions', id);
 	if (!transactionDoc) {
 		return;
@@ -361,12 +341,10 @@ export async function deleteTransaction(id: string) {
 }
 
 export async function updateAccountGroup(accountGroupDoc: AccountGroupDoc) {
-	await initDb();
 	await db.put('accountGroups', accountGroupDoc);
 }
 
 export async function createAccountGroup(title: string, currencyCode: string) {
-	await initDb();
 	await db.put('accountGroups', {
 		id: nanoid(5),
 		currencyCode,
@@ -375,7 +353,6 @@ export async function createAccountGroup(title: string, currencyCode: string) {
 }
 
 export async function createCurrency(code: string, title: string) {
-	await initDb();
 	await db.put('currencies', {
 		code,
 		title
@@ -383,18 +360,14 @@ export async function createCurrency(code: string, title: string) {
 }
 
 export async function updateCurrency(currencyDoc: CurrencyDoc) {
-	await initDb();
 	await db.put('currencies', currencyDoc);
 }
 
 export async function updateSettings(settingsDoc: SettingsDoc) {
-	await initDb();
 	await db.put('settings', settingsDoc);
 }
 
 export async function updateRates(rateDocs: RateDoc[], baseCurrencyCode: string) {
-	await initDb();
-
 	const newRates: Record<string, number> = {};
 	await db.delete('rates', baseCurrencyCode);
 	await Promise.all(
@@ -407,8 +380,6 @@ export async function updateRates(rateDocs: RateDoc[], baseCurrencyCode: string)
 }
 
 export async function getDBSnapshot(): Promise<DBSnapshot> {
-	await initDb();
-
 	const [currencies, accountGroups, accounts, categories, transactions, entries, settings, rates] =
 		await Promise.all([
 			getCurrencies(),
@@ -467,8 +438,6 @@ export function validateDBSnapshot(snapshot: DBSnapshot) {
 }
 
 export async function restoreSnapshot(snapshot: DBSnapshot) {
-	await initDb();
-
 	if (!confirm('All the data will be overwritten. Are you sure you want to continue?')) {
 		return false;
 	}
@@ -533,8 +502,6 @@ export async function restoreSnapshot(snapshot: DBSnapshot) {
 }
 
 export async function getTransactions(start: number, end: number, reverse = false) {
-	await initDb();
-
 	const transactionDocs = await db.getAllFromIndex(
 		'transactions',
 		'timestamp',
