@@ -47,7 +47,7 @@
 	}
 
 	function addSortedLines(l: ReportLine) {
-		l.sorted = Object.values(l.lines).sort((a, b) => a.total - b.total);
+		l.sorted = Object.values(l.lines).sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
 		for (const item of l.sorted) {
 			addSortedLines(item);
 		}
