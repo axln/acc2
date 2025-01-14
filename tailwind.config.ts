@@ -1,12 +1,17 @@
 import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 
-  theme: {
-    extend: {}
-  },
+	theme: {
+		extend: {
+			fontFamily: {
+				sans: ['InterVariable', ...defaultTheme.fontFamily.sans]
+			}
+		}
+	},
 
-  plugins: [typography]
+	plugins: [typography]
 } satisfies Config;
