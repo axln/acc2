@@ -31,12 +31,14 @@
 	<div
 		class={[
 			'flex gap-[10px] border-b border-gray-300 px-[10px]',
-			header ? 'bg-[#f4f4f8] font-bold text-gray-500' : 'py-[5px]',
+			header ? 'bg-[#f4f4f8] font-bold text-gray-500' : 'cursor-pointer py-[5px]',
 			nested && 'pl-[20px]'
 		]}
-		onclick={() => {
-			ondocs?.(subline.docs);
-		}}
+		onclick={header
+			? null
+			: () => {
+					ondocs?.(subline.docs);
+				}}
 	>
 		<span class="flex-1">{subline.title}</span>
 		<span class="flex-none">{formatAmount(Math.abs(subline.total), true)}</span>

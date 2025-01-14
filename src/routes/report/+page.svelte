@@ -182,10 +182,7 @@
 			{#each displayDocs as doc}
 				<div class="border-b border-[#ddd] p-[5px_10px]">
 					<div class="flex">
-						<span>
-							{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
-								.accountById[doc.accountId].title}
-						</span>
+						<span>{doc.comment}</span>
 						<span class={['ml-auto', doc.kind === TransactionKind.Income && 'text-[green]']}>
 							{formatAmount(
 								doc.kind === TransactionKind.Expense ? -doc.amount : doc.amount,
@@ -197,7 +194,11 @@
 					</div>
 					<div class="flex items-center gap-[10px]">
 						{#if doc.categoryId}
-							<span>{doc.comment}</span>
+							<span>
+								{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
+									.accountById[doc.accountId].title}
+							</span>
+
 							<span
 								class="whitespace-nowrap rounded-[5px] border border-[#ddd] bg-[#eee] px-[3px] text-[13px]"
 							>
