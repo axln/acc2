@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script module lang="ts">
 	let scrollTop: number | null = null;
 </script>
 

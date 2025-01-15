@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
 	import type { TransactionDoc } from '~/type.js';
 
 	export interface ReportLine {
