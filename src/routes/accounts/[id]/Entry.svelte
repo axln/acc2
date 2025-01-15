@@ -7,6 +7,7 @@
 		entry: EntryDoc;
 		ontransaction: (id: string) => void;
 	}
+
 	let { entry, ontransaction }: Props = $props();
 
 	const { categories } = useStore();

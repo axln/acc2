@@ -55,19 +55,15 @@
 {#each Object.keys(data.entriesByDays) as dayKey}
 	<div class="flex gap-2.5 border-b border-gray-300 bg-gray-100 px-2.5 py-0">
 		<span class="flex-auto font-bold">{dayKey}</span>
-		<span class="flex-none"
-			>{formatAmount(calcDayTotal(data.entriesByDays[dayKey]), true, true)}</span
-		>
+		<span class="flex-none">
+			{formatAmount(calcDayTotal(data.entriesByDays[dayKey]), true, true)}
+		</span>
 	</div>
 
 	{#each data.entriesByDays[dayKey] as entry (entry.id)}
 		<Entry
 			{entry}
 			ontransaction={(id: string) => {
-				/* if (document.documentElement.scrollTop) {
-					scrollTop = document.documentElement.scrollTop;
-					console.log('scrollTop saved:', scrollTop);
-				} */
 				goto(`#/accounts/${data.account.id}/transactions/${id}`);
 			}}
 		/>
