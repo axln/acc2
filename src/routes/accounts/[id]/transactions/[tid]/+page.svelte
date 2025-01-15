@@ -11,7 +11,11 @@
 	async function onsave(params: TransactionParams) {
 		const { updateTransaction } = await import('~/lib/db');
 		await updateTransaction(data.transaction, params);
-		goto(`#/accounts/${data.transaction.accountId}`);
+		goto(`#/accounts/${data.transaction.accountId}`, {
+			state: {
+				transactionId: data.transaction.id
+			}
+		});
 	}
 
 	async function onmenu(id: string) {
