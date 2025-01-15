@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { TransactionDoc } from '~/type.js';
 	import InputBox from '~/components/controls/InputBox.svelte';
 	import Header from '~/components/Header.svelte';
@@ -19,6 +20,12 @@
 	);
 
 	let displayDocs = $state<TransactionDoc[] | null>(null);
+
+	onMount(() => {
+		return () => {
+			document.documentElement.style.removeProperty('overflow');
+		};
+	});
 
 	const reportPromise = $derived.by(async () => {
 		const [year, month] = monthYear.split('-');
