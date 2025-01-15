@@ -19,55 +19,50 @@ import { formatTimestamp } from './utils';
 
 export let db: IDBPDatabase<AccDB>;
 
-const dbPromise = openDB<AccDB>('acc', 3, {
-	upgrade(upgradeDb, oldVer, newVer, tx) {
-		if (!upgradeDb.objectStoreNames.contains('accountGroups')) {
-			const accountGroupsStore = upgradeDb.createObjectStore('accountGroups', { keyPath: 'id' });
-			accountGroupsStore.createIndex('title', 'title');
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('accounts')) {
-			const accountsStore = upgradeDb.createObjectStore('accounts', { keyPath: 'id' });
-			accountsStore.createIndex('title', 'title');
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('currencies')) {
-			upgradeDb.createObjectStore('currencies', { keyPath: 'code' });
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('categories')) {
-			const categoriesStore = upgradeDb.createObjectStore('categories', { keyPath: 'id' });
-			categoriesStore.createIndex('title', ['title', 'subtitle']);
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('entries')) {
-			const entriesStore = upgradeDb.createObjectStore('entries', { keyPath: 'id' });
-			entriesStore.createIndex('accountId', 'accountId');
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('transactions')) {
-			const transactionsStore = upgradeDb.createObjectStore('transactions', { keyPath: 'id' });
-			transactionsStore.createIndex('timestamp', 'timestamp');
-		} else {
-			const transactionsStore = tx.objectStore('transactions');
-			transactionsStore.createIndex('timestamp', 'timestamp');
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('settings')) {
-			upgradeDb.createObjectStore('settings', { keyPath: 'name' });
-		}
-
-		if (!upgradeDb.objectStoreNames.contains('rates')) {
-			upgradeDb.createObjectStore('rates', { keyPath: 'code' });
-		}
-	}
-}).then((dbInstance) => {
-	db = dbInstance;
-	// console.log('DB initialized');
-});
-
 export async function initDb() {
-	await dbPromise;
+	db = await openDB<AccDB>('acc', 3, {
+		upgrade(upgradeDb, oldVer, newVer, tx) {
+			if (!upgradeDb.objectStoreNames.contains('accountGroups')) {
+				const accountGroupsStore = upgradeDb.createObjectStore('accountGroups', { keyPath: 'id' });
+				accountGroupsStore.createIndex('title', 'title');
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('accounts')) {
+				const accountsStore = upgradeDb.createObjectStore('accounts', { keyPath: 'id' });
+				accountsStore.createIndex('title', 'title');
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('currencies')) {
+				upgradeDb.createObjectStore('currencies', { keyPath: 'code' });
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('categories')) {
+				const categoriesStore = upgradeDb.createObjectStore('categories', { keyPath: 'id' });
+				categoriesStore.createIndex('title', ['title', 'subtitle']);
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('entries')) {
+				const entriesStore = upgradeDb.createObjectStore('entries', { keyPath: 'id' });
+				entriesStore.createIndex('accountId', 'accountId');
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('transactions')) {
+				const transactionsStore = upgradeDb.createObjectStore('transactions', { keyPath: 'id' });
+				transactionsStore.createIndex('timestamp', 'timestamp');
+			} else {
+				const transactionsStore = tx.objectStore('transactions');
+				transactionsStore.createIndex('timestamp', 'timestamp');
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('settings')) {
+				upgradeDb.createObjectStore('settings', { keyPath: 'name' });
+			}
+
+			if (!upgradeDb.objectStoreNames.contains('rates')) {
+				upgradeDb.createObjectStore('rates', { keyPath: 'code' });
+			}
+		}
+	});
 }
 
 export async function getAccountGroups() {
