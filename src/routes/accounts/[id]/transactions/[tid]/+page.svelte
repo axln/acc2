@@ -3,14 +3,18 @@
 	import type { TransactionParams } from '~/type.js';
 	import Header from '~/components/Header.svelte';
 	import TransactionForm from '~/components/TransactionForm.svelte';
+	import { useStore } from '~/lib/store';
 
 	let { data } = $props();
+
+	const { latestTimestamp } = useStore();
 
 	// console.log('transaction data:', data);
 
 	async function onsave(params: TransactionParams) {
 		const { updateTransaction } = await import('~/lib/db');
 		await updateTransaction(data.transaction, params);
+		$latestTimestamp = params.timestamp;
 		goto(`#/accounts/${data.transaction.accountId}`, {
 			state: {
 				transactionId: data.transaction.id
