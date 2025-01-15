@@ -168,3 +168,22 @@ export function safeJSONParse(text: string) {
 		return null;
 	}
 }
+
+export function highlightElement(element: HTMLElement, className: string) {
+	if (element.classList.contains(className)) {
+		element.classList.remove(className);
+		// hack with reflow triggering
+		void element.offsetWidth;
+		element.classList.add(className);
+		return;
+	}
+
+	element.addEventListener(
+		'animationend',
+		() => {
+			element.classList.remove(className);
+		},
+		{ once: true }
+	);
+	element.classList.add(className);
+}

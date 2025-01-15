@@ -20,7 +20,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	id={entry.id}
+	id={entry.transactionId}
 	class={[
 		'cursor-pointer border-b border-gray-300 px-2.5 py-[5px] hover:bg-[#e1effa] active:bg-[#d1e3f0]',
 		entry.reconciled && 'bg-[#e8ffe0]'

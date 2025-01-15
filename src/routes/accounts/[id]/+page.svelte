@@ -4,11 +4,12 @@
 
 <script lang="ts">
 	import { tick } from 'svelte';
+	import { page } from '$app/state';
 	import { goto, beforeNavigate } from '$app/navigation';
 	import type { EntryDoc } from '~/type.js';
 	import Header from '~/components/Header.svelte';
 	import Entry from './Entry.svelte';
-	import { formatAmount } from '~/lib/utils';
+	import { formatAmount, highlightElement } from '~/lib/utils';
 
 	let { data } = $props();
 	// console.log('account data:', data);
@@ -25,6 +26,13 @@
 			document.documentElement.scrollTop = scrollTop;
 			console.log('scrolltop restored:', scrollTop);
 			scrollTop = null;
+		}
+
+		if (page.state.transactionId) {
+			const element = document.getElementById(page.state.transactionId);
+			if (element) {
+				highlightElement(element, 'highlight-animation');
+			}
 		}
 	});
 

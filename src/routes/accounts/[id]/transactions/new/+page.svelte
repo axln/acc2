@@ -14,7 +14,11 @@
 		const doc = await createTransaction(params);
 		$latestTimestamp = doc.timestamp;
 		// console.log('transaction created:', doc);
-		goto(`#/accounts/${data.account.id}`);
+		goto(`#/accounts/${data.account.id}`, {
+			state: {
+				transactionId: doc.id
+			}
+		});
 	}
 </script>
 
