@@ -72,6 +72,7 @@
 			placeholder="Category"
 			oninput={() => {
 				// console.log('value:', value);
+				dropdown.show();
 				const category = $categories.find(
 					(c) => value.trim().toLocaleLowerCase() === formatTitle(c).toLocaleLowerCase()
 				);
