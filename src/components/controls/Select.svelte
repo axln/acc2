@@ -6,7 +6,7 @@
 	bind:value
 	{...rest}
 	class={[
-		'rounded-sm border border-gray-400 py-[7px] text-[length:inherit] invalid:text-gray-400',
+		'h-[36px] rounded-sm border border-gray-400 px-[1px] text-[length:inherit] invalid:text-gray-400',
 		rest.class
 	]}
 >

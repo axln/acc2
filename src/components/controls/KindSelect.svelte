@@ -16,13 +16,13 @@
 	}
 </script>
 
-<div class="flex rounded-sm border border-gray-500">
+<div class="flex rounded-sm border border-gray-400">
 	{#each transactionKinds as item}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<span
 			class={[
-				'flex-1 border-l border-gray-500  p-[5px] text-center first:border-l-0',
+				'flex-1 border-l border-gray-400  p-[5px] text-center first:border-l-0',
 				item.value === kind && 'bg-[cadetblue] text-white'
 			]}
 			data-value={item.value}

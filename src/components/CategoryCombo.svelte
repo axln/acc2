@@ -60,7 +60,7 @@
 		"[&>[data-role='popover']]:max-h-[400px]",
 		"[&>[data-role='popover']]:rounded-sm",
 		"[&>[data-role='popover']]:border",
-		"[&>[data-role='popover']]:border-gray-500"
+		"[&>[data-role='popover']]:border-gray-400"
 	]}
 	bind:this={dropdown}
 >

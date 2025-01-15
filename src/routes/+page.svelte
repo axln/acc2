@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import Header from '~/components/Header.svelte';
 	import AccountGroup from './AccountGroup.svelte';
 	import {
@@ -96,7 +97,16 @@
 		{
 			id: 'restore',
 			title: 'Restore'
-		}
+		},
+		...(dev
+			? [
+					{
+						id: 'test',
+						title: 'Test',
+						to: '#/test'
+					}
+				]
+			: [])
 	]}
 	{onmenu}
 />
