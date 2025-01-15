@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { goto, beforeNavigate } from '$app/navigation';
 	import type { EntryDoc } from '~/type.js';
 	import Header from '~/components/Header.svelte';
 	import Entry from './Entry.svelte';
@@ -12,6 +12,13 @@
 
 	let { data } = $props();
 	// console.log('account data:', data);
+
+	beforeNavigate(() => {
+		if (document.documentElement.scrollTop) {
+			scrollTop = document.documentElement.scrollTop;
+			console.log('scrollTop saved:', scrollTop);
+		}
+	});
 
 	tick().then(() => {
 		if (scrollTop) {
@@ -57,10 +64,10 @@
 		<Entry
 			{entry}
 			ontransaction={(id: string) => {
-				if (document.documentElement.scrollTop) {
+				/* if (document.documentElement.scrollTop) {
 					scrollTop = document.documentElement.scrollTop;
 					console.log('scrollTop saved:', scrollTop);
-				}
+				} */
 				goto(`#/accounts/${data.account.id}/transactions/${id}`);
 			}}
 		/>
