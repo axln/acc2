@@ -10,6 +10,7 @@ export interface Store {
 	baseCurrencyCode: Writable<string>;
 	currencies: Writable<CurrencyDoc[]>;
 	categories: Writable<CategoryDoc[]>;
+	latestTimestamp: Writable<number | null>;
 }
 
 export function useStore(): Store {
