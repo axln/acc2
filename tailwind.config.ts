@@ -8,5 +8,8 @@ export default {
 		extend: {}
 	},
 
-	plugins: [typography]
+	plugins: [typography],
+	future: {
+		hoverOnlyWhenSupported: true
+	}
 } satisfies Config;
