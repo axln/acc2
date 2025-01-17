@@ -15,7 +15,7 @@
 <div
 	class="cursor-pointer border-b border-gray-300 p-2.5 hover:bg-[#e1effa] active:bg-[#d1e3f0]"
 	data-role="account"
-	onclick={() => {
+	onpointerdown={() => {
 		onaccount(account.id);
 	}}
 >
