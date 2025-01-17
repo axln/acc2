@@ -29,7 +29,7 @@
 		{/if}
 	</div>
 
-	<h1 class="m-0 flex-auto text-center text-[18px] text-white">
+	<h1 class="m-0 flex-auto text-center text-white">
 		{title}
 	</h1>
 
