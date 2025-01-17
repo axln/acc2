@@ -25,7 +25,7 @@
 		'cursor-pointer border-b border-gray-300 px-2.5 py-[5px] hover:bg-[#e1effa] active:bg-[#d1e3f0]',
 		entry.reconciled && 'bg-[#e8ffe0]'
 	]}
-	onpointerdown={() => {
+	onclick={() => {
 		ontransaction(entry.transactionId);
 	}}
 >
