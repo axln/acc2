@@ -16,6 +16,10 @@
 		-webkit-tap-highlight-color: transparent;
 	}
 
+	span {
+		user-select: none;
+	}
+
 	@keyframes highlight {
 		0% {
 			background-color: #fff4c2;
