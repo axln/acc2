@@ -16,8 +16,10 @@
 		-webkit-tap-highlight-color: transparent;
 	}
 
-	span {
-		user-select: none;
+	@media not all and (hover: none) {
+		:root {
+			user-select: none;
+		}
 	}
 
 	@keyframes highlight {
