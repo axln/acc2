@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { STORE } from '~/lib/store.js';
+	import { STORE } from '~/lib/store';
 	import '~/app.css';
 
 	let { data, children } = $props();
