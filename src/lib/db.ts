@@ -181,6 +181,11 @@ export async function createTransaction(params: TransactionParams) {
 }
 
 export async function recalcBalance(accountId: string) {
+	const account = await getAccount(accountId);
+	if (!account) {
+		return;
+	}
+
 	const entries = await getEntries(accountId, false);
 	let total = 0;
 	for (const entry of entries) {
@@ -192,10 +197,7 @@ export async function recalcBalance(accountId: string) {
 			});
 		}
 	}
-	const account = await getAccount(accountId);
-	if (!account) {
-		return;
-	}
+
 	if (account.balance !== total) {
 		await db.put('accounts', {
 			...account,
@@ -204,6 +206,28 @@ export async function recalcBalance(accountId: string) {
 		return true;
 	}
 	return false;
+}
+
+export async function recalculateAccountBalances() {
+	const accounts = await getAccounts();
+	for (const account of accounts) {
+		const prevBalance = account.balance;
+		await recalcBalance(account.id);
+		const udpatedAcc = await getAccount(account.id);
+		if (udpatedAcc) {
+			if (prevBalance !== udpatedAcc.balance) {
+				console.log(
+					'Updated balance for account:',
+					udpatedAcc.title,
+					'from',
+					prevBalance,
+					'to',
+					udpatedAcc.balance
+				);
+			}
+		}
+		console.log('Recalculated balance for account:', account.title);
+	}
 }
 
 export function makeTransactionDocs(

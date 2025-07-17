@@ -10,7 +10,7 @@
 		getCurrencyRate,
 		safeJSONParse
 	} from '~/lib/utils';
-	import { getDBSnapshot, restoreSnapshot } from '~/lib/db';
+	import { getDBSnapshot, restoreSnapshot, recalculateAccountBalances } from '~/lib/db';
 	import { useStore } from '~/lib/store.js';
 
 	const { baseCurrencyCode, rates } = useStore();
@@ -51,6 +51,12 @@
 							window.location.reload();
 						}
 					}
+				});
+				break;
+
+			case 'recalc':
+				recalculateAccountBalances().catch((err) => {
+					console.error('Error recalculating account balances:', err);
 				});
 				break;
 		}
@@ -97,6 +103,10 @@
 		{
 			id: 'restore',
 			title: 'Restore'
+		},
+		{
+			id: 'recalc',
+			title: 'Recalc'
 		},
 		...(dev
 			? [

@@ -1,8 +1,7 @@
 import type { PageLoad } from './$types';
+import { getAccountGroups, getAccounts } from '~/lib/db';
 
 export const load: PageLoad = async () => {
-	const { getAccountGroups, getAccounts } = await import('~/lib/db');
-
 	return {
 		accountGroups: await getAccountGroups(),
 		accounts: await getAccounts()

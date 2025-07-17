@@ -6,14 +6,12 @@
 
 	let { data, children } = $props();
 
-	const latestTimestamp = writable<number | null>(null);
-
 	setContext(STORE, {
 		baseCurrencyCode: writable(data.baseCurrencyCode),
 		rates: writable(data.rates),
 		categories: writable(data.categories),
 		currencies: writable(data.currencies),
-		latestTimestamp
+		latestTimestamp: writable<number | null>(null)
 	});
 </script>
 
