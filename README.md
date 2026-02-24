@@ -2,11 +2,11 @@
 
 Personal accounting mobile web app.
 
-## Разработка
+## Development
 
 This is third version of the codebase rewritten in SvelteKit with builtin hash-router.
 
-## Релиз
+## Release
 
 The current release is available on the GitHub static hosting:
 
