@@ -87,7 +87,7 @@ export function getLocalCustomISODateString(date: Date) {
 }
 
 export function validateAmount(value: string) {
-	return /^[1-9]\d*([.,](\d{1,2})?)?$/.test(value);
+	return /^[0-9]\d*([.,](\d{1,2})?)?$/.test(value);
 }
 
 export function parseAmount(value: string): number {
