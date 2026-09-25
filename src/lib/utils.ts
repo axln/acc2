@@ -92,14 +92,12 @@ export function validateAmount(value: string) {
 
 export function parseAmount(value: string): number {
 	if (/[.,]/.test(value)) {
-		let [whole, decimal] = value.split(/[.,]/);
+		const [whole, decimal] = value.split(/[.,]/);
 		if (decimal.trim() === '') {
 			return parseInt(whole) * 100;
 		} else {
-			if (decimal.length === 1) {
-				decimal = decimal + '0';
-			}
-			return parseInt(whole + decimal);
+			const paddedDecimal = decimal.length === 1 ? decimal + '0' : decimal;
+			return parseInt(whole + paddedDecimal);
 		}
 	} else {
 		return parseInt(value) * 100;
