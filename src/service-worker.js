@@ -10,9 +10,23 @@ const ASSETS = [...build, ...files, ...prerendered, SHELL];
 self.addEventListener('install', (event) => {
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
-		await cache.addAll(ASSETS);
+
+		// `cache: 'reload'` bypasses the browser's HTTP cache. Otherwise the shell can come back
+		// stale (GitHub Pages sends max-age=600) and still point at the previous deploy's bundle,
+		// which is deleted from the server and from the old cache, so the app fails to load.
+		const shell = await fetch(SHELL, { cache: 'reload' });
+		const html = await shell.clone().text();
+		if (!shell.ok || !build.some((file) => file.endsWith('.js') && html.includes(file))) {
+			// failing the install keeps the previous worker and its cache; the browser retries later
+			throw new Error('App shell does not match this build');
+		}
+
+		await cache.addAll(
+			ASSETS.filter((url) => url !== SHELL).map((url) => new Request(url, { cache: 'reload' }))
+		);
+		await cache.put(SHELL, shell);
 	}
-	event.waitUntil(addFilesToCache());
+	event.waitUntil(addFilesToCache().then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
