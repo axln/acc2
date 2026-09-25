@@ -167,6 +167,7 @@
 		<Line
 			line={splitBySign(report)}
 			header
+			currencyCode={$baseCurrencyCode}
 			ondocs={(docs) => {
 				displayDocs = docs;
 				document.documentElement.style.setProperty('overflow', 'hidden');
