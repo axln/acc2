@@ -58,15 +58,6 @@
 	]}
 />
 
-<div class="flex items-baseline gap-2 px-5 pb-1 pt-4">
-	<span class="text-sm text-muted">Balance</span>
-	<span
-		class={['ml-auto text-2xl font-bold tabular-nums', data.account.balance < 0 && 'text-negative']}
-		>{formatAmount(data.account.balance, true)}</span
-	>
-	<span class="text-muted">{data.account.currencyCode}</span>
-</div>
-
 {#each Object.keys(data.entriesByDays) as dayKey}
 	<h2 class="section-label">
 		<span class="flex-auto">{dayKey}</span>
