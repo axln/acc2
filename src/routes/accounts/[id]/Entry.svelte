@@ -22,7 +22,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	id={entry.transactionId}
-	class="cursor-pointer px-4 py-3 transition-colors hover:bg-fg/[0.04] active:bg-fg/[0.08]"
+	class="tap-row px-4 py-3"
 	onclick={() => {
 		ontransaction(entry.transactionId);
 	}}
