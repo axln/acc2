@@ -21,6 +21,7 @@ The project has no test framework and no tests. To test by hand with data, open 
 
 ## Build & deployment
 
+- `main` is the current design and the one deployed. The `old-design` branch keeps the pre-overhaul UI (cadet-blue header, grey bordered controls) as of `1d5a070`.
 - The static build goes into `dist/`, which is **not** committed (`.gitignore`) and is only a local/CI build artifact. A push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which type-checks, builds, and publishes `dist/` to GitHub Pages via `actions/deploy-pages`. There is no manual release step.
 - `svelte.config.js` sets `paths.base` to `/acc2` for every command except `dev`, where it is empty. It also uses the hash router (`router.type: 'hash'`), `bundleStrategy: 'single'` and `appDir: 'app'`.
 - The `~` alias points to `src` (for example, `~/lib/db`, `~/type`, `~/components/...`). Use it instead of `$lib`.
@@ -70,6 +71,10 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 - **Theme:** colors are semantic tokens (`canvas`, `surface`, `fg`, `muted`, `line`, `primary`, `primary-soft`, `positive`, `negative`) defined in `tailwind.config.ts` as CSS variables. `src/app.css` sets their RGB channels, with a `prefers-color-scheme: dark` override, so dark mode is automatic. Use these tokens, not raw Tailwind palette colors. The primary violet matches the app icon. `app.css` also defines the shared `card`, `section-label`, `list-row` and `chip` classes. The font sizes `xs`/`sm`/`base` are overridden to 13/15/17px, and tap targets are at least 44–48px.
 - Lists are rounded `card`s on the grey `canvas`, with a `section-label` above each one. `Fab.svelte` is a sticky bottom-right add button; the account page uses it for new transactions.
+- **Privacy:** the user records spendings in public and doesn't want the money they hold readable at a glance. Keep overall balances low-key:
+  - The home page shows the grand total only as a small muted row at the bottom.
+  - The account page has no balance header. Each day header shows that day's incoming sum (green, `+`) and outgoing sum separately, leaving out a zero side, instead of a net total.
+  - Don't add prominent totals or balance cards back.
 - `src/components/` holds the forms and selects.
 - `src/components/controls/` holds generic inputs: Button (`variant` `primary` by default, or `secondary`), DropDown, InputBox, Select and KindSelect.
 - `Keypad.svelte` is the on-screen amount keypad.
@@ -88,6 +93,12 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 - `static/manifest.webmanifest` is the web app manifest (`display: standalone`, icons under `static/icons/`). It uses `start_url`/`scope: "."`, which resolve relative to the manifest's own URL, so it works unmodified under the `/acc2` base path.
 - `src/service-worker.js` is a hand-written SvelteKit service worker (not the auto-registered one; `svelte.config.js` sets `serviceWorker.register: false`). It precaches `build`/`files`/`prerendered` from `$service-worker` plus the app shell (`${base}/`, added explicitly since `prerender.entries` is `[]` so nothing is prerendered) under a cache keyed by `version`, so each deploy invalidates the previous cache. On fetch it serves cached assets first, otherwise falls back to network then cache, and serves the cached shell for failed navigations (offline).
+- **Install must bypass the HTTP cache.** GitHub Pages serves `index.html` with `max-age=600`, so a plain `cache.addAll` can store the previous deploy's shell. That shell points at a bundle that is gone from the server and from the deleted old cache, and the app then 404s until the next deploy. This happened once after a deploy. To prevent it:
+  - `install` fetches everything with `cache: 'reload'`.
+  - It fails if the shell doesn't reference one of this build's `.js` files, which keeps the previous worker.
+  - It calls `skipWaiting()`, so a fixed worker replaces a broken one on the next load. A broken page never runs `hooks.client.ts`, but the browser still checks for a new worker on navigation.
+- To test service worker changes, use `yarn build && yarn preview` (the preview serves under `/acc2/`). To simulate a deploy, build again with any change: the rebuild deletes the old bundle, as a Pages deploy does. Then reload twice.
+- If a browser is stuck on a broken worker, unregister it in DevTools → Application → Service workers. Never suggest "Clear site data" or the phone's "Clear & reset": they also delete IndexedDB, which holds all of the user's data and has no server copy.
 - `src/hooks.client.ts` registers it manually (`navigator.serviceWorker.register`), guarded by `!dev`, since `build`/`files` from `$service-worker` are empty during `yarn dev`.
 - **When changing `svelte.config.js`'s `paths.base` or `appDir`, or adding new static assets that should work offline**, check `src/service-worker.js` still covers them — it relies on `$service-worker`'s `files`/`build` exports rather than a hardcoded list, so most changes need no update here.
 

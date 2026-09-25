@@ -13,6 +13,8 @@ library.
 - Multiple accounts grouped into account groups, with running balances
 - Multiple currencies with exchange rates against a base currency
 - Categories for transactions
+- Mobile-first UI with large text and tap targets, and automatic dark mode
+- Balances kept low-key on screen, for privacy when recording spendings in public
 - JSON backup and restore of the whole database
 - iOS-style push/pop slide transitions between views
 - Installable as a PWA with offline launch support, for use as a home-screen app
@@ -62,11 +64,21 @@ that precaches the build output and app shell, and a web manifest
 `display: standalone`. This lets a home-screen shortcut launch from cache with no
 network connection. The service worker only registers in production builds; there's
 none in `yarn dev`. A new deploy gets a new cache automatically, keyed by SvelteKit's
-build `version`.
+build `version`. On install, the service worker fetches files past the browser's HTTP
+cache, so it never stores an app shell from the previous deploy.
+
+If the app shows a blank page after a deploy, reload it twice. Don't clear the site's
+data to fix it: that also deletes all of your accounts and transactions, which exist
+only in the browser.
 
 The app icon's source is [`static/favicon.svg`](static/favicon.svg), which also serves
 as the favicon. The PNG icons (`static/favicon.png` and `static/icons/icon-*.png`) are
 rendered from it, so regenerate them whenever the SVG changes.
+
+## Branches
+
+- `main` is the current design and what GitHub Pages serves.
+- `old-design` keeps the previous UI from before the mobile overhaul.
 
 ## Tech stack
 
