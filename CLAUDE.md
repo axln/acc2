@@ -21,6 +21,8 @@ The project has no test framework and no tests. To test by hand with data, open 
 
 When testing with the Chrome browser tools, the tab you drive is often in the background. A background tab renders no frames, so `requestAnimationFrame` never fires (a script awaiting it hangs), `IntersectionObserver` stays silent, and view transitions freeze halfway. Taking a screenshot brings the tab to the front; do that before relying on any of those.
 
+The browser window's size changes between sessions, so coordinates from an old screenshot can hit the wrong control (a click meant for the category field once landed on the date field, and the arrow keys then changed the date). Click form fields by a `find` reference instead. Rows and buttons use `transition-colors`, so a screenshot taken right after a key press can still show the old highlight. Check the element's classes in the DOM when that matters.
+
 ## Build & deployment
 
 - `main` is the current design and the one deployed. The `old-design` branch keeps the pre-overhaul UI (cadet-blue header, grey bordered controls) as of `1d5a070`.
