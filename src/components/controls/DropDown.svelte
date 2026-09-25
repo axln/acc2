@@ -17,6 +17,10 @@
 		dropdown.toggleAttribute('data-opened', false);
 	}
 
+	export function opened() {
+		return dropdown.hasAttribute('data-opened');
+	}
+
 	export function show() {
 		dropdown.toggleAttribute('data-opened', true);
 	}

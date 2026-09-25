@@ -91,7 +91,7 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - Don't add prominent totals or balance cards back.
 - `src/components/` holds the forms and selects.
 - `Header` takes `saveForm`, the `id` of a form. It then shows a checkmark that submits that form, so a long form can be saved without scrolling to its button. The edit transaction page uses it.
-- `CategoryCombo` filters the list by the typed text, with names that start with it first, so a main category lists its subcategories on top. An exact match is selected without dropping the filter. Tapping the field opens the list (it never toggles it closed). With a category selected, it shows the whole list scrolled to that category.
+- `CategoryCombo` filters the list by the typed text, with names that start with it first, so a main category lists its subcategories on top. An exact match is selected without dropping the filter. Tapping the field opens the list (it never toggles it closed). With a category selected, it shows the whole list scrolled to that category. The up and down arrows open the list, then move the selection and put its text in the field. Enter while the list is open fixes the choice and closes it, without submitting the form. Escape closes it and brings back the choice from before the arrows moved it.
 - `src/components/controls/` holds generic inputs: Button (`variant` `primary` by default, or `secondary`), DropDown, InputBox, Select and KindSelect.
 - `Keypad.svelte` is the on-screen amount keypad.
 - `src/lib/actions/` contains Svelte actions (`autoClose`, `focus`).

@@ -31,6 +31,9 @@
 		return [...matches.filter(starts), ...matches.filter((c) => !starts(c))];
 	});
 
+	// the choice before the arrow keys moved it, which Escape brings back
+	let beforeMove: { categoryId: string | undefined; value: string } | null = null;
+
 	let dropdown: DropDown;
 	let list: HTMLUListElement;
 
@@ -48,12 +51,53 @@
 	}
 
 	async function open() {
+		if (!dropdown.opened()) {
+			beforeMove = null;
+		}
 		dropdown.show();
 		await tick();
 		// center the selected item in the popover, which is the scroll container
 		const popover = list.parentElement!;
-		const item = list.querySelector<HTMLElement>(`[data-id="${categoryId}"]`);
+		const item = selectedItem();
 		popover.scrollTop = item ? item.offsetTop - (popover.clientHeight - item.offsetHeight) / 2 : 0;
+	}
+
+	function selectedItem() {
+		return list.querySelector<HTMLElement>(`[data-id="${categoryId}"]`);
+	}
+
+	// moves the selection by step through the shown list, putting its text in the field
+	async function move(step: number) {
+		// a closed list only opens, showing the current choice
+		if (!dropdown.opened()) {
+			query = categoryId ? '' : value;
+			open();
+			return;
+		}
+		if (categoryList.length === 0) {
+			return;
+		}
+		const index = categoryList.findIndex((c) => c.id === categoryId);
+		const next =
+			index === -1
+				? step > 0
+					? 0
+					: categoryList.length - 1
+				: Math.min(Math.max(index + step, 0), categoryList.length - 1);
+		beforeMove ??= { categoryId, value };
+		categoryId = categoryList[next].id;
+		value = formatTitle(categoryList[next]);
+		await tick();
+		// scroll just enough to show the item
+		const popover = list.parentElement!;
+		const item = selectedItem();
+		if (item) {
+			if (item.offsetTop < popover.scrollTop) {
+				popover.scrollTop = item.offsetTop;
+			} else if (item.offsetTop + item.offsetHeight > popover.scrollTop + popover.clientHeight) {
+				popover.scrollTop = item.offsetTop + item.offsetHeight - popover.clientHeight;
+			}
+		}
 	}
 
 	function select(id: string) {
@@ -96,11 +140,35 @@
 			oninput={(e: Event & { currentTarget: HTMLInputElement }) => {
 				const text = e.currentTarget.value;
 				query = text;
+				// typing keeps the text, so Escape has nothing to undo
+				beforeMove = null;
 				const category = $categories.find(
 					(c) => text.trim().toLowerCase() === formatTitle(c).toLowerCase()
 				);
 				categoryId = category ? category.id : '';
 				open();
+			}}
+			onkeydown={(e: KeyboardEvent) => {
+				if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+					e.preventDefault();
+					move(e.key === 'ArrowDown' ? 1 : -1);
+				} else if (e.key === 'Enter' && dropdown.opened()) {
+					// Enter fixes the choice and closes the list instead of submitting the form
+					e.preventDefault();
+					if (categoryId) {
+						select(categoryId);
+					} else {
+						query = '';
+						dropdown.close();
+					}
+				} else if (e.key === 'Escape' && dropdown.opened()) {
+					// Escape drops the choice made with the arrows and closes the list
+					if (beforeMove) {
+						({ categoryId, value } = beforeMove);
+					}
+					query = '';
+					dropdown.close();
+				}
 			}}
 		/>
 	{/snippet}
