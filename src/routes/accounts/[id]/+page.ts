@@ -1,10 +1,9 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import type { EntryDoc } from '~/type';
-import { formatDate } from '~/lib/utils';
+import { PAGE_SIZE, getLoadedCount } from './paging';
 
 export const load: PageLoad = async ({ params }) => {
-	const { getAccount, getEntries } = await import('~/lib/db');
+	const { getAccount, getEntriesPage } = await import('~/lib/db');
 
 	const account = await getAccount(params.id);
 
@@ -12,24 +11,17 @@ export const load: PageLoad = async ({ params }) => {
 		error(404, `Account ${params.id} not found`);
 	}
 
-	const entries = await getEntries(account.id);
+	// only the newest entries, so the page opens quickly however long the history is;
+	// the page reads older ones as it's scrolled
+	const { entries, hasMore } = await getEntriesPage(
+		account.id,
+		Math.max(PAGE_SIZE, getLoadedCount(account.id))
+	);
 
 	return {
 		account,
 		entries,
-		entriesByDays: entries.reduce(
-			(acc, entry) => {
-				const title = formatDate(entry.timestamp);
-
-				if (acc[title]) {
-					acc[title].push(entry);
-				} else {
-					acc[title] = [entry];
-				}
-				return acc;
-			},
-			{} as Record<string, EntryDoc[]>
-		),
-		lastTimestamp: entries?.length > 0 ? entries[0].timestamp + 60000 : null
+		hasMore,
+		lastTimestamp: entries.length > 0 ? entries[0].timestamp + 60000 : null
 	};
 };

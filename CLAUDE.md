@@ -39,9 +39,9 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 - `hooks.client.ts` calls `initDb()` at client init. It opens IndexedDB `acc` and exports the live `db` handle. **Schema changes** need three steps:
   - Bump the version number in `openDB('acc', N, ...)`.
-  - Add guarded, idempotent steps to `upgrade()`.
+  - Add guarded, idempotent steps to `upgrade()`. The upgrade runs on existing databases too, so check `indexNames.contains` before every `createIndex`, or it throws on a phone that already has that index.
   - Update the `AccDB` schema in `src/type.ts`.
-- There are 8 object stores: `accountGroups`, `accounts`, `currencies` (keyed by `code`), `categories`, `entries`, `transactions`, `settings` (keyed by `name`) and `rates` (keyed by `code`). IDs come from `nanoid(5)`.
+- There are 8 object stores: `accountGroups`, `accounts`, `currencies` (keyed by `code`), `categories`, `entries`, `transactions`, `settings` (keyed by `name`) and `rates` (keyed by `code`). IDs come from `nanoid(5)`. The schema is at version 4, which added the `entries` index `accountTime` (`[accountId, timestamp, id]`).
 - **Double-entry model:**
   - A `TransactionDoc` (kind `EXPENSE` / `INCOME` / `TRANSFER`) owns one `EntryDoc`, or two for a transfer.
   - Each entry belongs to one account and holds a signed `amount` plus a running `total`.
@@ -74,6 +74,11 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 - **Theme:** colors are semantic tokens (`canvas`, `surface`, `fg`, `muted`, `line`, `primary`, `primary-soft`, `positive`, `negative`) defined in `tailwind.config.ts` as CSS variables. `src/app.css` sets their RGB channels, with a `prefers-color-scheme: dark` override, so dark mode is automatic. Use these tokens, not raw Tailwind palette colors. The primary violet matches the app icon. `app.css` also defines the shared `card`, `section-label`, `list-row`, `tap-row` and `chip` classes. Any row that navigates on tap uses `tap-row` (`list-row` includes it). It turns off text selection and the iOS long-press callout, because Chrome on Android would otherwise sometimes select a row's text on an ordinary tap. The global `user-select: none` in `app.css` applies only to devices that can hover, so it doesn't cover phones. The font sizes `xs`/`sm`/`base` are overridden to 13/15/17px, and tap targets are at least 44–48px.
 - Lists are rounded `card`s on the grey `canvas`, with a `section-label` above each one. `Fab.svelte` is a sticky bottom-right add button; the account page uses it for new transactions.
+- **Account page paging:** the account page doesn't read the whole history, so that it opens quickly.
+  - `getEntriesPage` reads the newest entries through the `accountTime` index: `PAGE_SIZE` (50, in `accounts/[id]/paging.ts`) of them, plus the rest of the last one's day, so a day header's sums are never partial.
+  - A sentinel at the end of the list, watched by an `IntersectionObserver`, reads older pages as you scroll.
+  - Scroll position and the number of loaded entries are kept only when the page opens one of its own views (a transaction, the edit form), so coming back restores both. Opening the account from anywhere else starts at the top with one page.
+  - When testing it, keep the browser tab in front: a background tab renders no frames, so the observer and the view transitions stall.
 - **Privacy:** the user records spendings in public and doesn't want the money they hold readable at a glance. Keep overall balances low-key:
   - The home page shows the grand total only as a small muted row at the bottom.
   - The account page has no balance header. Each day header shows that day's incoming sum (green, `+`) and outgoing sum separately, leaving out a zero side, instead of a net total.

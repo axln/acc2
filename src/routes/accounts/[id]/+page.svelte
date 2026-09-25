@@ -10,15 +10,78 @@
 	import Header from '~/components/Header.svelte';
 	import Fab from '~/components/Fab.svelte';
 	import Entry from './Entry.svelte';
-	import { formatAmount, highlightElement } from '~/lib/utils';
+	import { formatAmount, formatDate, highlightElement } from '~/lib/utils';
+	import { PAGE_SIZE, clearLoadedCount, saveLoadedCount } from './paging';
 
 	let { data } = $props();
 	// console.log('account data:', data);
 
-	beforeNavigate(() => {
-		if (document.documentElement.scrollTop) {
-			scrollTop = document.documentElement.scrollTop;
-			console.log('scrollTop saved:', scrollTop);
+	// entries read after the first page, as the list is scrolled
+	let olderEntries = $state.raw<EntryDoc[]>([]);
+	let loadedAll = $state(false);
+	let loading = false;
+
+	let entries = $derived([...data.entries, ...olderEntries]);
+	let hasMore = $derived(data.hasMore && !loadedAll);
+
+	let entriesByDays = $derived(
+		entries.reduce(
+			(acc, entry) => {
+				const title = formatDate(entry.timestamp);
+
+				if (acc[title]) {
+					acc[title].push(entry);
+				} else {
+					acc[title] = [entry];
+				}
+				return acc;
+			},
+			{} as Record<string, EntryDoc[]>
+		)
+	);
+
+	async function loadMore() {
+		if (loading || !hasMore) {
+			return;
+		}
+		loading = true;
+		try {
+			const { getEntriesPage } = await import('~/lib/db');
+			const page = await getEntriesPage(data.account.id, PAGE_SIZE, entries[entries.length - 1]);
+			olderEntries = [...olderEntries, ...page.entries];
+			loadedAll = !page.hasMore;
+		} finally {
+			loading = false;
+		}
+	}
+
+	// reads the next page once the end of the list comes within a screen or so of view
+	function nearEnd(node: Element) {
+		const observer = new IntersectionObserver(
+			([item]) => {
+				if (item.isIntersecting) {
+					loadMore();
+				}
+			},
+			{ rootMargin: '1000px 0px' }
+		);
+		observer.observe(node);
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	}
+
+	// Only opening one of this account's views (a transaction, the edit form) keeps the list
+	// as it is for the way back; opening the account from anywhere else starts at the top.
+	beforeNavigate(({ to }) => {
+		if (to?.url.hash.startsWith(`#/accounts/${data.account.id}/`)) {
+			scrollTop = document.documentElement.scrollTop || null;
+			saveLoadedCount(data.account.id, entries.length);
+		} else {
+			scrollTop = null;
+			clearLoadedCount();
 		}
 	});
 
@@ -69,8 +132,8 @@
 	]}
 />
 
-{#each Object.keys(data.entriesByDays) as dayKey}
-	{@const flows = calcDayFlows(data.entriesByDays[dayKey])}
+{#each Object.keys(entriesByDays) as dayKey}
+	{@const flows = calcDayFlows(entriesByDays[dayKey])}
 	<h2 class="section-label">
 		<span class="flex-auto">{dayKey}</span>
 		{#if flows.credit}
@@ -84,7 +147,7 @@
 	</h2>
 
 	<div class="card mx-4 divide-y divide-line">
-		{#each data.entriesByDays[dayKey] as entry (entry.id)}
+		{#each entriesByDays[dayKey] as entry (entry.id)}
 			<Entry
 				{entry}
 				ontransaction={(id: string) => {
@@ -96,6 +159,13 @@
 {:else}
 	<p class="px-6 py-10 text-center text-muted">No transactions yet.</p>
 {/each}
+
+{#if hasMore}
+	<!-- recreated after each page so the observer checks again whether it's still near -->
+	{#key entries.length}
+		<div class="py-6 text-center text-sm text-muted" use:nearEnd>Loading…</div>
+	{/key}
+{/if}
 
 <Fab
 	label="New transaction"

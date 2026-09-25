@@ -110,6 +110,7 @@ export interface AccDB extends DBSchema {
 		value: EntryDoc;
 		indexes: {
 			accountId: string;
+			accountTime: [string, number, string];
 		};
 	};
 	transactions: {

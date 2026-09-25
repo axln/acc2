@@ -15,12 +15,12 @@ import type {
 } from '~/type';
 import { TransactionKind } from './enum';
 import { baseCurrencyName } from './const';
-import { formatTimestamp } from './utils';
+import { formatDate, formatTimestamp } from './utils';
 
 export let db: IDBPDatabase<AccDB>;
 
 export async function initDb() {
-	db = await openDB<AccDB>('acc', 3, {
+	db = await openDB<AccDB>('acc', 4, {
 		upgrade(upgradeDb, oldVer, newVer, tx) {
 			if (!upgradeDb.objectStoreNames.contains('accountGroups')) {
 				const accountGroupsStore = upgradeDb.createObjectStore('accountGroups', { keyPath: 'id' });
@@ -41,16 +41,21 @@ export async function initDb() {
 				categoriesStore.createIndex('title', ['title', 'subtitle']);
 			}
 
-			if (!upgradeDb.objectStoreNames.contains('entries')) {
-				const entriesStore = upgradeDb.createObjectStore('entries', { keyPath: 'id' });
+			const entriesStore = upgradeDb.objectStoreNames.contains('entries')
+				? tx.objectStore('entries')
+				: upgradeDb.createObjectStore('entries', { keyPath: 'id' });
+			if (!entriesStore.indexNames.contains('accountId')) {
 				entriesStore.createIndex('accountId', 'accountId');
 			}
+			// an account's entries in time order, so the account page can read only the newest
+			if (!entriesStore.indexNames.contains('accountTime')) {
+				entriesStore.createIndex('accountTime', ['accountId', 'timestamp', 'id']);
+			}
 
-			if (!upgradeDb.objectStoreNames.contains('transactions')) {
-				const transactionsStore = upgradeDb.createObjectStore('transactions', { keyPath: 'id' });
-				transactionsStore.createIndex('timestamp', 'timestamp');
-			} else {
-				const transactionsStore = tx.objectStore('transactions');
+			const transactionsStore = upgradeDb.objectStoreNames.contains('transactions')
+				? tx.objectStore('transactions')
+				: upgradeDb.createObjectStore('transactions', { keyPath: 'id' });
+			if (!transactionsStore.indexNames.contains('timestamp')) {
 				transactionsStore.createIndex('timestamp', 'timestamp');
 			}
 
@@ -115,6 +120,34 @@ export async function getEntries(accountId: string, reverse = true) {
 		const cmp = a.timestamp - b.timestamp;
 		return reverse ? -cmp : cmp;
 	});
+}
+
+// An account's entries, newest first: `limit` of them plus the rest of the last one's
+// day, so that a day's sums on the account page never cover only part of the day.
+// With `before`, the page starts after that entry. `hasMore` tells whether older
+// entries remain.
+export async function getEntriesPage(accountId: string, limit: number, before?: EntryDoc) {
+	const range = IDBKeyRange.bound(
+		[accountId],
+		before ? [accountId, before.timestamp, before.id] : [accountId, Infinity],
+		false,
+		!!before
+	);
+	const entries: EntryDoc[] = [];
+	let lastDay = '';
+
+	let cursor = await db.transaction('entries').store.index('accountTime').openCursor(range, 'prev');
+	while (cursor) {
+		const day = formatDate(cursor.value.timestamp);
+		if (entries.length >= limit && day !== lastDay) {
+			return { entries, hasMore: true };
+		}
+		entries.push(cursor.value);
+		lastDay = day;
+		cursor = await cursor.continue();
+	}
+
+	return { entries, hasMore: false };
 }
 
 export async function getCategories() {
