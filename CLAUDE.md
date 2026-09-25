@@ -82,6 +82,13 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - In a Svelte transition's `css(t, u)`, `t` runs 0→1 for intros but 1→0 for outros, so `t = 1` always means "in place".
 - `src/routes/test` is a scratch page.
 
+### PWA & offline support
+
+- `static/manifest.webmanifest` is the web app manifest (`display: standalone`, icons under `static/icons/`). It uses `start_url`/`scope: "."`, which resolve relative to the manifest's own URL, so it works unmodified under the `/acc2` base path.
+- `src/service-worker.js` is a hand-written SvelteKit service worker (not the auto-registered one; `svelte.config.js` sets `serviceWorker.register: false`). It precaches `build`/`files`/`prerendered` from `$service-worker` plus the app shell (`${base}/`, added explicitly since `prerender.entries` is `[]` so nothing is prerendered) under a cache keyed by `version`, so each deploy invalidates the previous cache. On fetch it serves cached assets first, otherwise falls back to network then cache, and serves the cached shell for failed navigations (offline).
+- `src/hooks.client.ts` registers it manually (`navigator.serviceWorker.register`), guarded by `!dev`, since `build`/`files` from `$service-worker` are empty during `yarn dev`.
+- **When changing `svelte.config.js`'s `paths.base` or `appDir`, or adding new static assets that should work offline**, check `src/service-worker.js` still covers them — it relies on `$service-worker`'s `files`/`build` exports rather than a hardcoded list, so most changes need no update here.
+
 ## Code style
 
 The prettier config sets tabs, single quotes, no trailing commas and a print width of 100. It includes the svelte and tailwind class-sorting plugins.

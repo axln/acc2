@@ -15,6 +15,7 @@ library.
 - Categories for transactions
 - JSON backup and restore of the whole database
 - iOS-style push/pop slide transitions between views
+- Installable as a PWA with offline launch support, for use as a home-screen app
 
 ## Live release
 
@@ -52,6 +53,16 @@ There is no test framework or test suite in this project.
 Pushes to `main` trigger [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
 which type-checks, runs `yarn build`, and publishes `dist/` to GitHub Pages via
 `actions/deploy-pages`. `dist/` is not committed to git.
+
+## PWA & offline support
+
+The app registers a service worker ([`src/service-worker.js`](src/service-worker.js))
+that precaches the build output and app shell, and a web manifest
+([`static/manifest.webmanifest`](static/manifest.webmanifest)) for
+`display: standalone`. This lets a home-screen shortcut launch from cache with no
+network connection. The service worker only registers in production builds; there's
+none in `yarn dev`. A new deploy gets a new cache automatically, keyed by SvelteKit's
+build `version`.
 
 ## Tech stack
 
