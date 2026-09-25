@@ -13,11 +13,11 @@ Uses yarn (`yarn.lock`).
 - `yarn dev`: start the dev server.
 - `yarn build`: create a production build in `dist/`.
 - `yarn preview`: serve the production build.
-- `yarn check`: type-check with svelte-check.
-- `yarn lint`: run the prettier check and eslint.
+- `yarn run check`: type-check with svelte-check. Use `run`, because on Yarn 1 a bare `yarn check` runs Yarn's built-in lockfile integrity check instead.
+- `yarn lint`: run the prettier check and eslint. It already fails on prettier issues in `dist/` and a few config files, so check the files you changed (`npx prettier --check <file>`, `npx eslint <file>`).
 - `yarn format`: rewrite files with prettier.
 
-The project has no test framework and no tests.
+The project has no test framework and no tests. To test by hand with data, open the dev server in a browser and run `const m = await import('/src/lib/db.ts')` in the console. It shares the app's open `db` connection, so the app's own functions (`createCurrency`, `createAccount`, `createTransaction`, …) keep balances consistent. Reload afterwards so the root layout reloads its reference data. IndexedDB is per origin, so data seeded on one dev-server port doesn't appear on another.
 
 ## Build & deployment
 
@@ -73,6 +73,13 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 - `Keypad.svelte` is the on-screen amount keypad.
 - `src/lib/actions/` contains Svelte actions (`autoClose`, `focus`).
 - The UI uses the native `alert` and `confirm` for errors and confirmations.
+- **View transitions** live in the root `+layout.svelte`. They work like iOS navigation:
+  - A `{#key}` on the hash path wraps each page in a `div` with the custom `ios` transition.
+  - `beforeNavigate` sets the direction. Going to a shallower hash path is a pop; anything else is a push.
+  - The deeper view sits on top with a shadow and moves the full width. The view underneath shifts 30% and dims.
+  - Both views share one grid cell, so they overlap without absolute positioning. Each has a white background so they don't show through each other.
+  - The container uses `overflow-x-clip`, not `overflow-x-hidden`: `hidden` would create a scroll container and break the sticky `Header`.
+  - In a Svelte transition's `css(t, u)`, `t` runs 0→1 for intros but 1→0 for outros, so `t = 1` always means "in place".
 - `src/routes/test` is a scratch page.
 
 ## Code style

@@ -14,6 +14,7 @@ library.
 - Multiple currencies with exchange rates against a base currency
 - Categories for transactions
 - JSON backup and restore of the whole database
+- iOS-style push/pop slide transitions between views
 
 ## Live release
 
@@ -32,14 +33,17 @@ yarn dev
 
 ### Scripts
 
-| Command        | Description                          |
-| -------------- | ------------------------------------ |
-| `yarn dev`     | Start the dev server                 |
-| `yarn build`   | Create a production build in `dist/` |
-| `yarn preview` | Serve the production build locally   |
-| `yarn check`   | Type-check with `svelte-check`       |
-| `yarn lint`    | Run the Prettier check and ESLint    |
-| `yarn format`  | Rewrite files with Prettier          |
+| Command          | Description                          |
+| ---------------- | ------------------------------------ |
+| `yarn dev`       | Start the dev server                 |
+| `yarn build`     | Create a production build in `dist/` |
+| `yarn preview`   | Serve the production build locally   |
+| `yarn run check` | Type-check with `svelte-check`       |
+| `yarn lint`      | Run the Prettier check and ESLint    |
+| `yarn format`    | Rewrite files with Prettier          |
+
+Use `yarn run check` rather than `yarn check`: on Yarn 1 the bare form runs Yarn's
+built-in lockfile integrity check instead of the project script.
 
 There is no test framework or test suite in this project.
 
