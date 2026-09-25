@@ -65,6 +65,7 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - The `settings` store holds the base currency under the `baseCurrencyCode` name.
   - `rates` holds each currency's rate relative to the base currency.
   - `getCurrencyRate` and `getGroupBalance` do the conversions for group totals.
+  - The report (`src/routes/report`) converts every income and expense into the base currency with today's rates, not the rates on the transaction's date, and shows the base currency code next to every total. A currency missing from `rates` counts 1:1, which is right for the base currency.
 - **Backup and restore:**
   - `getDBSnapshot()` exports every store as a JSON `DBSnapshot`.
   - `restoreSnapshot()` validates a snapshot and overwrites every store in one transaction.
@@ -89,6 +90,8 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - The account page has no balance header. Each day header shows that day's incoming sum (green, `+`) and outgoing sum separately, leaving out a zero side, instead of a net total.
   - Don't add prominent totals or balance cards back.
 - `src/components/` holds the forms and selects.
+- `Header` takes `saveForm`, the `id` of a form. It then shows a checkmark that submits that form, so a long form can be saved without scrolling to its button. The edit transaction page uses it.
+- `CategoryCombo` filters the list by the typed text, with names that start with it first, so a main category lists its subcategories on top. An exact match is selected without dropping the filter. Tapping the field opens the list (it never toggles it closed). With a category selected, it shows the whole list scrolled to that category.
 - `src/components/controls/` holds generic inputs: Button (`variant` `primary` by default, or `secondary`), DropDown, InputBox, Select and KindSelect.
 - `Keypad.svelte` is the on-screen amount keypad.
 - `src/lib/actions/` contains Svelte actions (`autoClose`, `focus`).

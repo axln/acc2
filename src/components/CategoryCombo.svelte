@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import type { CategoryDoc } from '~/type';
 	import DropDown from './controls/DropDown.svelte';
 	import InputBox from './controls/InputBox.svelte';
@@ -16,21 +17,22 @@
 		value = getCategoryTitle(categoryId);
 	}
 
-	let filter = $state(false);
-
-	// let value = $state(categoryId ? getCategoryTitle(categoryId) : '');
+	// the text the list is filtered by; empty shows every category
+	let query = $state('');
 
 	let categoryList = $derived.by(() => {
-		value; // trigger on change
-		return filter
-			? $categories.filter((c) => {
-					const fullTitle = `${c.title}:${c.subtitle}`;
-					return fullTitle.toLowerCase().includes(value.trim().toLowerCase());
-				})
-			: $categories;
+		const q = query.trim().toLowerCase();
+		if (!q) {
+			return $categories;
+		}
+		const matches = $categories.filter((c) => formatTitle(c).toLowerCase().includes(q));
+		// names starting with the text go first, so typing a category lists its subcategories on top
+		const starts = (c: CategoryDoc) => formatTitle(c).toLowerCase().startsWith(q);
+		return [...matches.filter(starts), ...matches.filter((c) => !starts(c))];
 	});
 
 	let dropdown: DropDown;
+	let list: HTMLUListElement;
 
 	function getCategoryTitle(categoryId: string) {
 		const category = $categories.find((c) => c.id === categoryId);
@@ -45,9 +47,26 @@
 		return `${c.title}${c.subtitle ? `:${c.subtitle}` : ''}`;
 	}
 
+	async function open() {
+		dropdown.show();
+		await tick();
+		// center the selected item in the popover, which is the scroll container
+		const popover = list.parentElement!;
+		const item = list.querySelector<HTMLElement>(`[data-id="${categoryId}"]`);
+		popover.scrollTop = item ? item.offsetTop - (popover.clientHeight - item.offsetHeight) / 2 : 0;
+	}
+
+	function select(id: string) {
+		categoryId = id;
+		value = getCategoryTitle(id);
+		query = '';
+		dropdown.close();
+	}
+
 	export function clear() {
 		categoryId = '';
 		value = '';
+		query = '';
 	}
 </script>
 
@@ -60,6 +79,7 @@
 		"[&>[data-role='popover']]:max-h-[360px]",
 		"[&>[data-role='popover']]:py-1.5"
 	]}
+	toggle={false}
 	bind:this={dropdown}
 >
 	{#snippet caption()}
@@ -68,20 +88,19 @@
 			type="text"
 			bind:value
 			placeholder="Category"
-			oninput={() => {
-				// console.log('value:', value);
-				dropdown.show();
+			onclick={() => {
+				// a chosen category shows the whole list, typed text keeps it filtered
+				query = categoryId ? '' : value;
+				open();
+			}}
+			oninput={(e: Event & { currentTarget: HTMLInputElement }) => {
+				const text = e.currentTarget.value;
+				query = text;
 				const category = $categories.find(
-					(c) => value.trim().toLocaleLowerCase() === formatTitle(c).toLocaleLowerCase()
+					(c) => text.trim().toLowerCase() === formatTitle(c).toLowerCase()
 				);
-				if (category) {
-					categoryId = category.id;
-					value = formatTitle(category);
-					filter = false;
-				} else {
-					categoryId = '';
-					filter = true;
-				}
+				categoryId = category ? category.id : '';
+				open();
 			}}
 		/>
 	{/snippet}
@@ -89,15 +108,10 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions-->
 	<ul
+		bind:this={list}
 		onclick={(e) => {
-			if (e.target instanceof HTMLLIElement) {
-				categoryId = e.target.dataset.id;
-				const category = $categories.find((c) => c.id === categoryId);
-				if (category) {
-					value = formatTitle(category);
-				}
-				dropdown.close();
-				filter = false;
+			if (e.target instanceof HTMLLIElement && e.target.dataset.id) {
+				select(e.target.dataset.id);
 			}
 		}}
 	>
@@ -109,7 +123,7 @@
 				]}
 				data-id={c.id}
 			>
-				{c.title}{c.subtitle ? `:${c.subtitle}` : ''}
+				{formatTitle(c)}
 			</li>
 		{:else}
 			<li class="px-4 py-3 text-muted">No matching categories</li>
