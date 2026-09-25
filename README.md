@@ -64,6 +64,10 @@ network connection. The service worker only registers in production builds; ther
 none in `yarn dev`. A new deploy gets a new cache automatically, keyed by SvelteKit's
 build `version`.
 
+The app icon's source is [`static/favicon.svg`](static/favicon.svg), which also serves
+as the favicon. The PNG icons (`static/favicon.png` and `static/icons/icon-*.png`) are
+rendered from it, so regenerate them whenever the SVG changes.
+
 ## Tech stack
 
 - [SvelteKit 2](https://kit.svelte.dev/) + [Svelte 5](https://svelte.dev/) (runes)

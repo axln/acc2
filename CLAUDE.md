@@ -89,6 +89,18 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 - `src/hooks.client.ts` registers it manually (`navigator.serviceWorker.register`), guarded by `!dev`, since `build`/`files` from `$service-worker` are empty during `yarn dev`.
 - **When changing `svelte.config.js`'s `paths.base` or `appDir`, or adding new static assets that should work offline**, check `src/service-worker.js` still covers them — it relies on `$service-worker`'s `files`/`build` exports rather than a hardcoded list, so most changes need no update here.
 
+### App icon
+
+- `static/favicon.svg` is the source of the app icon: a gradient wallet on a transparent background. `app.html` links it as the main favicon, with `static/favicon.png` (128px) as the fallback for browsers without SVG favicon support.
+- The PNGs are rendered from the SVG and must be regenerated after any SVG change:
+  - `static/favicon.png` (128px)
+  - `static/icons/icon-192.png`, which the manifest and the `apple-touch-icon` use
+  - `static/icons/icon-512.png`, which the manifest uses
+- The repo has no SVG rasterizer. To regenerate, render the SVG at 512×512 with headless Chrome, then downscale with `sips`:
+  - `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --default-background-color=00000000 --window-size=512,512 --screenshot=icon.png file://$PWD/static/favicon.svg`
+  - `sips -z 192 192 icon.png --out static/icons/icon-192.png` (and the same for 512 and 128).
+- iOS fills the transparent areas of the `apple-touch-icon` with black.
+
 ## Code style
 
 The prettier config sets tabs, single quotes, no trailing commas and a print width of 100. It includes the svelte and tailwind class-sorting plugins.
