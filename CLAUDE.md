@@ -97,6 +97,7 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - `beforeNavigate` sets the direction. Going to a shallower hash path is a pop; anything else is a push.
   - The deeper view sits on top with a shadow and moves the full width. The view underneath shifts 30% and dims.
   - Both views share one grid cell, so they overlap without absolute positioning. Each has the opaque `bg-canvas` background and `min-h-dvh`, so they don't show through each other and the sticky `Fab` sits at the bottom of short pages.
+  - The grid's one column is `grid-cols-[minmax(0,1fr)]`. An automatic column grows to its widest unbreakable content, so one long word in a comment once widened the whole account page past the screen, with the right side cut off. For long user text, use `[overflow-wrap:anywhere]`, not `break-words`: the latter wraps on screen but still counts the word's full width when the layout is sized.
   - The container uses `overflow-x-clip`, not `overflow-x-hidden`: `hidden` would create a scroll container and break the sticky `Header`.
   - In a Svelte transition's `css(t, u)`, `t` runs 0→1 for intros but 1→0 for outros, so `t = 1` always means "in place".
 - `src/routes/test` is a scratch page.

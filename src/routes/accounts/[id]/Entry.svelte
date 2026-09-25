@@ -30,7 +30,7 @@
 	<div class="flex items-start gap-3">
 		<div class="min-w-0 flex-auto">
 			{#if entry.comment}
-				<span class="mr-1.5 break-words">{entry.comment}</span>
+				<span class="mr-1.5 [overflow-wrap:anywhere]">{entry.comment}</span>
 			{/if}
 
 			{#if category}

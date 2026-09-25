@@ -52,7 +52,9 @@
 	}
 </script>
 
-<main class="relative grid flex-1 overflow-x-clip">
+<!-- The column is exactly the screen width. With an automatic one, a row that can't wrap
+	(a long word, a long chip) would widen every page past the screen. -->
+<main class="relative grid flex-1 grid-cols-[minmax(0,1fr)] overflow-x-clip">
 	{#key page.url.hash.split('?')[0]}
 		<div
 			class="col-start-1 row-start-1 flex min-h-dvh flex-col bg-canvas"
