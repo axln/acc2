@@ -1,7 +1,7 @@
 {
 	"name": "acc-new",
 	"license": "MIT",
-	"version": "1.2.7",
+	"version": "1.2.8",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
