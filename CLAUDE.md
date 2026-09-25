@@ -37,13 +37,14 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 ### Data layer (`src/lib/db.ts`)
 
-- `hooks.client.ts` calls `initDb()` at client init. It opens IndexedDB `acc` and exports the live `db` handle. **Schema changes** need three steps:
+- **Don't change the database schema without the user's decision.** Any change that needs a new `openDB` version (a new store, index or upgrade step) is off-limits by default. If a request would need one, stop before writing it: explain why, and offer any way to do it without a schema change. Then ask the user to decide. The user asked for this after the move to version 4 left the app blank on their phone and computer until Chrome was force-stopped.
+- `hooks.client.ts` calls `initDb()` at client init. It opens IndexedDB `acc` and exports the live `db` handle. **Schema changes** (only once the user has agreed) need three steps:
   - Bump the version number in `openDB('acc', N, ...)`.
   - Add guarded, idempotent steps to `upgrade()`. The upgrade runs on existing databases too, so check `indexNames.contains` before every `createIndex`, or it throws on a phone that already has that index.
   - Update the `AccDB` schema in `src/type.ts`.
   - An upgrade waits until every other open copy of the app (another tab, the installed app window) closes its connection. Before the `blocked`/`blocking` handlers in `initDb`, that left the new version blank with no message, which happened on the move to version 4. `blocked` tells the user to close the other copy. `blocking` closes the outdated copy's connection and asks the user to close or reload it; it deliberately doesn't reload itself, since a reload could get the old version from the service worker and block the upgrade again.
   - Those handlers can't help when the copy holding the database is older than them, or is paused in the background. Then the open request just waits, sometimes with no `blocked` event, because it's queued behind an earlier stuck request. That's what happened with version 4. So `hooks.client.ts` runs a watchdog: if `initDb()` hasn't finished in 5 seconds, or throws, `src/lib/startupNotice.ts` shows a page explaining how to close the other copies. It has its own inline styles, since the app's CSS hasn't loaded at that point. The notice is removed if the database opens later.
-  - **Say clearly before releasing a change that bumps the database version**, and suggest a backup first. Avoid bumps that aren't needed.
+  - Before releasing an agreed schema change, remind the user to make a backup first.
 - There are 8 object stores: `accountGroups`, `accounts`, `currencies` (keyed by `code`), `categories`, `entries`, `transactions`, `settings` (keyed by `name`) and `rates` (keyed by `code`). IDs come from `nanoid(5)`. The schema is at version 4, which added the `entries` index `accountTime` (`[accountId, timestamp, id]`).
 - **Double-entry model:**
   - A `TransactionDoc` (kind `EXPENSE` / `INCOME` / `TRANSFER`) owns one `EntryDoc`, or two for a transfer.
