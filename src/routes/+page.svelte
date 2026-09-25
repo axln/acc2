@@ -108,6 +108,11 @@
 			id: 'recalc',
 			title: 'Recalc'
 		},
+		{
+			id: 'about',
+			title: 'About',
+			to: '#/about'
+		},
 		...(dev
 			? [
 					{

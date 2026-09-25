@@ -1,7 +1,7 @@
 {
 	"name": "acc-new",
 	"license": "MIT",
-	"version": "0.0.1",
+	"version": "1.2.1",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -10,7 +10,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"bump-version": "node scripts/bump-version.mjs"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
