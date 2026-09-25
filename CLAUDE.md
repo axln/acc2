@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Acc2 is a personal accounting web app built for mobile. It is the third rewrite of the codebase, now in SvelteKit 2 + Svelte 5 + Tailwind 3. It runs only in the browser: there is no backend, and all data lives in the browser's IndexedDB (through the `idb` library). The release is served from GitHub Pages at https://axln.github.io/acc2/dist/#/.
+Acc2 is a personal accounting web app built for mobile. It is the third rewrite of the codebase, now in SvelteKit 2 + Svelte 5 + Tailwind 3. It runs only in the browser: there is no backend, and all data lives in the browser's IndexedDB (through the `idb` library). The release is served from GitHub Pages at https://axln.github.io/acc2/#/.
 
 ## Commands
 
@@ -14,15 +14,15 @@ Uses yarn (`yarn.lock`).
 - `yarn build`: create a production build in `dist/`.
 - `yarn preview`: serve the production build.
 - `yarn run check`: type-check with svelte-check. Use `run`, because on Yarn 1 a bare `yarn check` runs Yarn's built-in lockfile integrity check instead.
-- `yarn lint`: run the prettier check and eslint. It already fails on prettier issues in `dist/` and a few config files, so check the files you changed (`npx prettier --check <file>`, `npx eslint <file>`).
+- `yarn lint`: run the prettier check and eslint. It already fails on prettier issues in a few config files (`.prettierrc`, `.vscode/settings.json`, `eslint.config.js`, `postcss.config.js`), so check the files you changed (`npx prettier --check <file>`, `npx eslint <file>`).
 - `yarn format`: rewrite files with prettier.
 
 The project has no test framework and no tests. To test by hand with data, open the dev server in a browser and run `const m = await import('/src/lib/db.ts')` in the console. It shares the app's open `db` connection, so the app's own functions (`createCurrency`, `createAccount`, `createTransaction`, …) keep balances consistent. Reload afterwards so the root layout reloads its reference data. IndexedDB is per origin, so data seeded on one dev-server port doesn't appear on another.
 
 ## Build & deployment
 
-- The static build goes into `dist/`, and **`dist/` is committed to git**. It is the deployed artifact. After changing source code for a release, run `yarn build` and commit the regenerated `dist/` files together with the source change, as in the "fresh build" and "amount validation fixed" commits.
-- `svelte.config.js` sets `paths.base` to `/acc2/dist` for every command except `dev`, where it is empty. It also uses the hash router (`router.type: 'hash'`), `bundleStrategy: 'single'` and `appDir: 'app'`.
+- The static build goes into `dist/`, which is **not** committed (`.gitignore`) and is only a local/CI build artifact. A push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which type-checks, builds, and publishes `dist/` to GitHub Pages via `actions/deploy-pages`. There is no manual release step.
+- `svelte.config.js` sets `paths.base` to `/acc2` for every command except `dev`, where it is empty. It also uses the hash router (`router.type: 'hash'`), `bundleStrategy: 'single'` and `appDir: 'app'`.
 - The `~` alias points to `src` (for example, `~/lib/db`, `~/type`, `~/components/...`). Use it instead of `$lib`.
 
 ## Architecture

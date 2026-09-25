@@ -20,7 +20,7 @@ library.
 
 The current release is hosted on GitHub Pages:
 
-https://axln.github.io/acc2/dist/#/
+https://axln.github.io/acc2/#/
 
 ## Development
 
@@ -49,9 +49,9 @@ There is no test framework or test suite in this project.
 
 ## Deployment
 
-The production build in `dist/` is committed to git and served directly from GitHub
-Pages, so a release consists of running `yarn build` and committing the regenerated
-`dist/` output together with the source change.
+Pushes to `main` trigger [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
+which type-checks, runs `yarn build`, and publishes `dist/` to GitHub Pages via
+`actions/deploy-pages`. `dist/` is not committed to git.
 
 ## Tech stack
 
