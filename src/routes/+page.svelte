@@ -121,17 +121,6 @@
 	{onmenu}
 />
 
-<section
-	class="mx-4 mt-4 rounded-3xl bg-gradient-to-br from-[#6d28d9] via-[#7c3aed] to-[#db2777] p-5 text-white shadow-lg shadow-primary/20"
->
-	<div class="text-sm font-medium text-white/80">Total balance</div>
-	<div class="mt-1 flex items-baseline gap-2">
-		<span class="text-[2rem] font-bold tabular-nums leading-tight">{formatAmount(total, true)}</span
-		>
-		<span class="text-lg font-medium text-white/80">{$baseCurrencyCode || ''}</span>
-	</div>
-</section>
-
 <div class="pb-6">
 	{#each data.accountGroups as accountGroup}
 		<AccountGroup {accountGroup} accounts={data.accounts} />
@@ -140,4 +129,11 @@
 			No accounts yet. Create an account group in the menu, then add an account with the + button.
 		</p>
 	{/each}
+
+	{#if data.accountGroups.length}
+		<div class="mx-4 mt-6 flex border-t border-line px-1 pt-3 text-sm text-muted">
+			<span class="flex-auto">Total</span>
+			<span class="tabular-nums">{formatAmount(total, true)} {$baseCurrencyCode || ''}</span>
+		</div>
+	{/if}
 </div>
