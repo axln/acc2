@@ -161,7 +161,7 @@ export function chooseTextFile(onChoose: (text: string) => void) {
 export function safeJSONParse(text: string) {
 	try {
 		return JSON.parse(text);
-	} catch (_) {
+	} catch {
 		console.warn('JSON parsing failed.');
 		return null;
 	}
