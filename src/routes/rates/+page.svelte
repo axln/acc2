@@ -71,31 +71,32 @@
 
 <Header title="Rates" returnPath="#/" />
 
-<form class="m-[10px] space-y-[10px]" {onsubmit}>
-	<div>
-		Base currency:
+<form class="space-y-3 p-4" {onsubmit}>
+	<label class="block">
+		<span class="mb-1 block px-1 text-sm font-medium text-muted">Base currency</span>
 		<CurrencySelect bind:currencyCode={baseCode} placeholder="Base Currency" />
-	</div>
+	</label>
 
 	{#each $currencies as { code }}
 		{#if code !== baseCode}
-			<div>
-				<div>{code}:</div>
-				<div>
-					<InputBox
-						class={[
-							'w-full outline-none',
-							!validateRate(currentRates[code]) && 'border-red-500 text-red-500'
-						]}
-						type="text"
-						bind:value={currentRates[code]}
-					/>
-				</div>
-			</div>
+			<label class="block">
+				<span class="mb-1 block px-1 text-sm font-medium text-muted">{code}</span>
+				<InputBox
+					class={[
+						'w-full tabular-nums',
+						!validateRate(currentRates[code]) &&
+							'border-negative text-negative focus:border-negative focus:ring-negative/25'
+					]}
+					id={code}
+					type="text"
+					inputmode="decimal"
+					bind:value={currentRates[code]}
+				/>
+			</label>
 		{/if}
 	{/each}
 
-	<div class="!mt-[20px]">
-		<Button class="mt-[10px] w-full" type="submit">Save</Button>
+	<div class="pt-2">
+		<Button class="w-full" type="submit">Save</Button>
 	</div>
 </form>

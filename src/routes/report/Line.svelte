@@ -28,23 +28,38 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 
 {#each line.sorted as subline}
-	<div
-		class={[
-			'flex gap-[10px] border-b border-gray-300 px-[10px]',
-			header ? 'bg-[#f4f4f8] font-bold text-gray-500' : 'cursor-pointer py-[5px]',
-			nested && 'pl-[20px]'
-		]}
-		onclick={header
-			? null
-			: () => {
-					ondocs?.(subline.docs);
-				}}
-	>
-		<span class="flex-1">{subline.title}</span>
-		<span class="flex-none">{formatAmount(Math.abs(subline.total), true)}</span>
-	</div>
+	{#if header}
+		<section>
+			<h2 class="section-label">
+				<span class="flex-auto">{subline.title}</span>
+				<span class={['flex-none text-sm tabular-nums', subline.total > 0 && 'text-positive']}>
+					{formatAmount(Math.abs(subline.total), true)}
+				</span>
+			</h2>
 
-	{#if subline.sorted.length > 0}
-		<Line line={subline} nested={!header} {ondocs} />
+			<div class="card mx-4 divide-y divide-line">
+				{#if subline.sorted.length > 0}
+					<Line line={subline} {ondocs} />
+				{:else}
+					<p class="px-4 py-4 text-center text-muted">Nothing this month</p>
+				{/if}
+			</div>
+		</section>
+	{:else}
+		<div
+			class={['list-row min-h-[52px] py-2.5', nested && 'pl-8 text-muted']}
+			onclick={() => {
+				ondocs?.(subline.docs);
+			}}
+		>
+			<span class={['min-w-0 flex-1', !nested && 'font-medium']}>{subline.title}</span>
+			<span class={['flex-none tabular-nums', !nested && 'font-semibold']}
+				>{formatAmount(Math.abs(subline.total), true)}</span
+			>
+		</div>
+
+		{#if subline.sorted.length > 0}
+			<Line line={subline} nested {ondocs} />
+		{/if}
 	{/if}
 {/each}

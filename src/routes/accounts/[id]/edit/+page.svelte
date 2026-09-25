@@ -15,6 +15,10 @@
 	}
 </script>
 
-<Header title={data.account.title} returnPath="#/accounts/{data.account.id}" />
+<Header
+	title="Edit account"
+	subtitle={data.account.title}
+	returnPath="#/accounts/{data.account.id}"
+/>
 
-<AccountForm class="m-2.5" accountGroups={data.accountGroups} account={data.account} {onsave} />
+<AccountForm class="p-4" accountGroups={data.accountGroups} account={data.account} {onsave} />

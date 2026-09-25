@@ -20,7 +20,7 @@
 </script>
 
 <form
-	class="m-[10px] space-y-2.5"
+	class="space-y-3 p-4"
 	onsubmit={async (e) => {
 		e.preventDefault();
 		if (title.trim() && currencyCode) {
@@ -53,7 +53,7 @@
 			focus
 		/>
 	</div>
-	<div>
+	<div class="pt-2">
 		<Button class="w-full" type="submit" disabled={adding}>
 			{#if accountGroup}
 				Save

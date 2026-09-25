@@ -7,8 +7,12 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
 		<link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/icons/icon-192.png" />
-		<meta name="theme-color" content="#ffffff" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#1a1d26" media="(prefers-color-scheme: dark)" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover"
+		/>
 		%sveltekit.head%
 	</head>
 	<body class="overflow-y-scroll" data-sveltekit-preload-data="tap">

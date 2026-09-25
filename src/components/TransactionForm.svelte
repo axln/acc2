@@ -139,16 +139,15 @@
 	}
 </script>
 
-<form class="m-[10px] space-y-[10px]" {onsubmit}>
-	<div>
-		<KindSelect bind:kind />
-	</div>
+<form class="space-y-3 p-4" {onsubmit}>
+	<KindSelect bind:kind />
 
-	<div class="flex gap-[10px]">
-		<InputBox class="w-full font-mono outline-none" type="datetime-local" bind:value={datetime} />
+	<div class="flex gap-2">
+		<InputBox class="min-w-0 flex-1 tabular-nums" type="datetime-local" bind:value={datetime} />
 
 		<Button
-			class="w-[80px]"
+			class="w-20 flex-none"
+			variant="secondary"
 			type="button"
 			onclick={() => {
 				datetime = getLocalCustomISODateString(new Date());
@@ -156,13 +155,14 @@
 		>
 	</div>
 
-	<div class="flex gap-[10px]">
+	<div class="flex gap-2">
 		{#if kind === TransactionKind.Transfer}
 			<AccountSelect bind:accountId={secondAccountId} {accounts} {accountGroups} placeholder="To" />
 		{:else}
 			<CategoryCombo bind:this={categoryCombo} bind:categoryId bind:value={categoryValue} />
 			<Button
-				class="w-[80px]"
+				class="w-20 flex-none"
+				variant="secondary"
 				type="button"
 				onclick={() => {
 					categoryCombo?.clear();
@@ -171,42 +171,54 @@
 		{/if}
 	</div>
 
-	<div>
-		Amount, {account.currencyCode}:
+	<label class="block">
+		<span class="mb-1 block px-1 text-sm font-medium text-muted"
+			>Amount, {account.currencyCode}</span
+		>
 		<InputBox
 			class={[
-				'w-full',
-				amount.trim() !== '' && !validateAmount(amount) && 'border-[red] text-[red]'
+				'h-14 w-full text-right text-2xl font-semibold tabular-nums',
+				amount.trim() !== '' &&
+					!validateAmount(amount) &&
+					'border-negative text-negative focus:border-negative focus:ring-negative/25'
 			]}
 			type="text"
 			bind:value={amount}
+			inputmode="decimal"
+			placeholder="0.00"
 		/>
-	</div>
+	</label>
 
 	{#if secondAccount && secondCurrency}
-		<div>
-			Amount, {secondAccount.currencyCode}:
+		<label class="block">
+			<span class="mb-1 block px-1 text-sm font-medium text-muted"
+				>Amount, {secondAccount.currencyCode}</span
+			>
 			<InputBox
 				class={[
-					'w-full',
-					secondAmount.trim() !== '' && !validateAmount(secondAmount) && 'border-[red] text-[red]'
+					'h-14 w-full text-right text-2xl font-semibold tabular-nums',
+					secondAmount.trim() !== '' &&
+						!validateAmount(secondAmount) &&
+						'border-negative text-negative focus:border-negative focus:ring-negative/25'
 				]}
 				type="text"
 				bind:value={secondAmount}
+				inputmode="decimal"
+				placeholder="0.00"
 			/>
-		</div>
+		</label>
 	{/if}
 
-	<div>
-		<InputBox class="w-full" type="text" bind:value={comment} placeholder="Comment"></InputBox>
-	</div>
+	<InputBox class="w-full" type="text" bind:value={comment} placeholder="Comment"></InputBox>
 
-	<div>
-		<label class="flex gap-[5px]">
-			<input type="checkbox" bind:checked={reconciled} />
-			<span>Reconciled</span>
-		</label>
-	</div>
+	<label class="flex min-h-11 cursor-pointer items-center gap-3 px-1">
+		<input
+			class="size-5 accent-[rgb(var(--c-primary))]"
+			type="checkbox"
+			bind:checked={reconciled}
+		/>
+		<span>Reconciled</span>
+	</label>
 
 	<Keypad
 		onkey={(k) => {
@@ -218,9 +230,7 @@
 		}}
 	/>
 
-	<div>
-		<Button class="mt-[10px] w-full" type="submit">
-			{transactionDoc ? 'Save' : 'Create'}
-		</Button>
-	</div>
+	<Button class="!mt-5 w-full" type="submit">
+		{transactionDoc ? 'Save' : 'Create'}
+	</Button>
 </form>

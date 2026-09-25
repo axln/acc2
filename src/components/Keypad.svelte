@@ -16,7 +16,7 @@
 </script>
 
 <div
-	class="space-y-[5px]"
+	class="grid grid-cols-3 gap-2"
 	onpointerdown={(e) => {
 		e.preventDefault();
 	}}
@@ -26,20 +26,16 @@
 		}
 	}}
 >
-	{#each keys as row}
-		<div class="flex gap-[5px]">
-			{#each row as key}
-				<span
-					class="flex flex-1 cursor-pointer items-center justify-center rounded bg-gray-200 p-[5px] text-[26px] text-gray-700"
-					data-key={key}
-				>
-					{#if key === '<'}
-						<BackspaceIcon size={24} />
-					{:else}
-						{key}
-					{/if}
-				</span>
-			{/each}
-		</div>
+	{#each keys.flat() as key}
+		<span
+			class="flex h-14 cursor-pointer items-center justify-center rounded-xl bg-surface text-2xl font-medium text-fg shadow-sm ring-1 ring-line/70 transition-colors active:bg-primary-soft"
+			data-key={key}
+		>
+			{#if key === '<'}
+				<BackspaceIcon size={26} />
+			{:else}
+				{key}
+			{/if}
+		</span>
 	{/each}
 </div>

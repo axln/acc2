@@ -3,6 +3,7 @@
 	import type { TransactionDoc } from '~/type.js';
 	import InputBox from '~/components/controls/InputBox.svelte';
 	import Header from '~/components/Header.svelte';
+	import CloseIcon from '~/components/icons/CloseIcon.svelte';
 	import Line, { type ReportLine } from './Line.svelte';
 	import { getTransactions } from '~/lib/db';
 	import { formatAmount, formatTimestamp, getCurrencyRate } from '~/lib/utils';
@@ -40,6 +41,11 @@
 
 		return report;
 	});
+
+	function closeDocs() {
+		displayDocs = null;
+		document.documentElement.style.removeProperty('overflow');
+	}
 
 	function amountInBaseCurrency(doc: TransactionDoc) {
 		const accountDoc = data.accountById[doc.accountId];
@@ -152,72 +158,88 @@
 
 <Header title="Report" returnPath="#/" />
 
-<div class="border-b border-gray-300 p-[10px]">
+<div class="px-4 pt-4">
 	<InputBox class="w-full" type="month" bind:value={monthYear} />
 </div>
 
 {#await reportPromise then report}
-	<Line
-		line={splitBySign(report)}
-		header
-		ondocs={(docs) => {
-			displayDocs = docs;
-			document.documentElement.style.setProperty('overflow', 'hidden');
-		}}
-	/>
+	<div class="pb-6">
+		<Line
+			line={splitBySign(report)}
+			header
+			ondocs={(docs) => {
+				displayDocs = docs;
+				document.documentElement.style.setProperty('overflow', 'hidden');
+			}}
+		/>
+	</div>
 {/await}
 
 {#if displayDocs}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<!-- popup -->
-	<div class="fixed inset-0 z-[2] flex items-stretch bg-[#8885] p-[10px]">
-		<!-- content -->
-		<div class="flex-1 overflow-y-auto bg-[#fff] shadow-sm">
-			<!-- header -->
-			<div class="sticky top-0 flex items-center border-b border-[#ddd] bg-[#f4f4f8]">
-				<h2 class="m-[0_10px] flex-auto font-bold text-gray-500">Transactions</h2>
+	<!-- bottom sheet, closes on a backdrop tap -->
+	<div
+		class="fixed inset-0 z-[6] flex flex-col justify-end bg-black/40"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) {
+				closeDocs();
+			}
+		}}
+	>
+		<div
+			class="max-h-[85dvh] overflow-y-auto rounded-t-3xl bg-surface pb-[env(safe-area-inset-bottom)] shadow-2xl"
+		>
+			<div class="sticky top-0 flex items-center border-b border-line bg-surface px-5 py-2">
+				<h2 class="flex-auto text-lg font-semibold">Transactions</h2>
 				<button
-					class="m-[5px] ml-auto rounded-sm border border-gray-400 p-[0_10px] align-middle"
-					onclick={() => {
-						displayDocs = null;
-						document.documentElement.style.removeProperty('overflow');
-					}}>X</button
+					class="-mr-2 flex size-11 items-center justify-center rounded-full text-muted transition-colors hover:bg-fg/[0.06] active:bg-fg/10"
+					aria-label="Close"
+					onclick={closeDocs}><CloseIcon /></button
 				>
 			</div>
 
-			{#each displayDocs as doc}
-				<div class="border-b border-[#ddd] p-[5px_10px]">
-					<div class="flex">
-						<span>{doc.comment}</span>
-						<span class={['ml-auto', doc.kind === TransactionKind.Income && 'text-[green]']}>
-							{formatAmount(
-								doc.kind === TransactionKind.Expense ? -doc.amount : doc.amount,
-								true,
-								true
-							)}
-							{data.accountById[doc.accountId]?.currencyCode}
-						</span>
-					</div>
-					<div class="flex items-center gap-[10px]">
-						{#if doc.categoryId}
-							<span>
-								{data.accountGroupById[data.accountById[doc.accountId].groupId].title}:{data
-									.accountById[doc.accountId].title}
-							</span>
-
+			<div class="divide-y divide-line">
+				{#each displayDocs as doc}
+					<div class="px-5 py-3">
+						<div class="flex items-start gap-3">
+							<span class="min-w-0 flex-auto break-words">{doc.comment}</span>
 							<span
-								class="whitespace-nowrap rounded-[5px] border border-[#ddd] bg-[#eee] px-[3px] text-[13px]"
+								class={[
+									'flex-none font-semibold tabular-nums',
+									doc.kind === TransactionKind.Income && 'text-positive'
+								]}
 							>
-								{`${data.categoryById[doc.categoryId].title}${data.categoryById[doc.categoryId].subtitle ? `:${data.categoryById[doc.categoryId].subtitle}` : ''}`}
+								{formatAmount(
+									doc.kind === TransactionKind.Expense ? -doc.amount : doc.amount,
+									true,
+									true
+								)}
+								<span class="text-sm font-normal text-muted"
+									>{data.accountById[doc.accountId]?.currencyCode}</span
+								>
 							</span>
-							<span class="ml-auto text-[13px] text-gray-400">
+						</div>
+						<div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+							{#if data.accountById[doc.accountId]}
+								<span>
+									{data.accountGroupById[data.accountById[doc.accountId].groupId]?.title}:{data
+										.accountById[doc.accountId].title}
+								</span>
+							{/if}
+
+							{#if doc.categoryId && data.categoryById[doc.categoryId]}
+								<span class="chip">
+									{`${data.categoryById[doc.categoryId].title}${data.categoryById[doc.categoryId].subtitle ? `:${data.categoryById[doc.categoryId].subtitle}` : ''}`}
+								</span>
+							{/if}
+							<span class="ml-auto tabular-nums">
 								{formatTimestamp(doc.timestamp)}
 							</span>
-						{/if}
+						</div>
 					</div>
-				</div>
-			{/each}
+				{/each}
+			</div>
 		</div>
 	</div>
 {/if}

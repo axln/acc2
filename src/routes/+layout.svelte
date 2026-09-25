@@ -55,7 +55,7 @@
 <main class="relative grid flex-1 overflow-x-clip">
 	{#key page.url.hash.split('?')[0]}
 		<div
-			class="col-start-1 row-start-1 flex flex-col bg-white"
+			class="col-start-1 row-start-1 flex min-h-dvh flex-col bg-canvas"
 			in:ios={{ top: direction === 1 }}
 			out:ios={{ top: direction === -1 }}
 		>

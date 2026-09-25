@@ -2,6 +2,7 @@
 	import type { EntryDoc } from '~/type';
 	import { formatAmount, formatTime } from '~/lib/utils';
 	import { useStore } from '~/lib/store';
+	import CheckIcon from '~/components/icons/CheckIcon.svelte';
 
 	interface Props {
 		entry: EntryDoc;
@@ -21,34 +22,43 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	id={entry.transactionId}
-	class={[
-		'cursor-pointer border-b border-gray-300 px-2.5 py-[5px] hover:bg-[#e1effa] active:bg-[#d1e3f0]',
-		entry.reconciled && 'bg-[#e8ffe0]'
-	]}
+	class="cursor-pointer px-4 py-3 transition-colors hover:bg-fg/[0.04] active:bg-fg/[0.08]"
 	onclick={() => {
 		ontransaction(entry.transactionId);
 	}}
 >
-	<div class="flex gap-2.5">
-		<div class="flex-auto">
-			<span class="[&:not(:only-child)]:mr-[5px]">{entry.comment}</span>
+	<div class="flex items-start gap-3">
+		<div class="min-w-0 flex-auto">
+			{#if entry.comment}
+				<span class="mr-1.5 break-words">{entry.comment}</span>
+			{/if}
 
 			{#if category}
-				<span
-					class="whitespace-nowrap rounded border border-gray-300 bg-gray-100 px-[3px] text-[13px] leading-[1em]"
-				>
+				<span class="chip">
 					{category.title}{category.subtitle ? `:${category.subtitle}` : ''}
 				</span>
 			{/if}
 		</div>
 
-		<div class={['flex-none text-right', entry.amount > 0 && 'text-[green]']}>
+		<div
+			class={[
+				'flex-none text-right font-semibold tabular-nums',
+				entry.amount > 0 && 'text-positive'
+			]}
+		>
 			{formatAmount(entry.amount, true, true)}
 		</div>
 	</div>
 
-	<div class={['mt-[5px] flex gap-2.5 text-[13px]', entry.reconciled && 'text-[#999]']}>
-		<div class="flex-auto">{formatTime(entry.timestamp)}</div>
-		<div class="flex-none text-right">{formatAmount(entry.total, true)}</div>
+	<div class="mt-1 flex items-center gap-3 text-sm text-muted">
+		<div class="flex flex-auto items-center gap-1.5 tabular-nums">
+			{formatTime(entry.timestamp)}
+			{#if entry.reconciled}
+				<span class="flex items-center gap-1 text-positive">
+					<CheckIcon size={14} /> Reconciled
+				</span>
+			{/if}
+		</div>
+		<div class="flex-none text-right tabular-nums">{formatAmount(entry.total, true)}</div>
 	</div>
 </div>

@@ -17,10 +17,10 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<ul class="m-0 select-none p-0 py-[5px]">
+<ul class="m-0 min-w-52 select-none p-0 py-1.5">
 	{#each items as item (item.id)}
 		<li
-			class="cursor-pointer whitespace-nowrap hover:bg-[#e1effa] active:bg-[#d1e3f0]"
+			class="cursor-pointer whitespace-nowrap transition-colors hover:bg-fg/[0.05] active:bg-fg/10"
 			data-id={item.id}
 			onclick={(event: Event) => {
 				if (event.currentTarget instanceof HTMLLIElement) {
@@ -31,11 +31,11 @@
 			}}
 		>
 			{#if item.to}
-				<a class="block py-2.5 pl-5 pr-[30px]" href={item.to} draggable={false}>
+				<a class="block px-5 py-3" href={item.to} draggable={false}>
 					{item.title}
 				</a>
 			{:else}
-				<span class="block py-2.5 pl-5 pr-[30px]">
+				<span class="block px-5 py-3">
 					{item.title}
 				</span>
 			{/if}

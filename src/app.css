@@ -4,16 +4,51 @@
 
 @layer base {
 	:root {
-		--default-text-color: #444;
+		--c-canvas: 243 244 248;
+		--c-surface: 255 255 255;
+		--c-fg: 17 24 39;
+		--c-muted: 100 110 128;
+		--c-line: 226 229 236;
+		--c-primary: 124 58 237;
+		--c-primary-fg: 255 255 255;
+		--c-primary-soft: 237 233 254;
+		--c-positive: 22 163 74;
+		--c-negative: 220 38 38;
 
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
-			sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
-
-		font-size: 18px;
-		color: var(--default-text-color);
+		color-scheme: light;
+		font-family:
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			Roboto,
+			'Noto Sans',
+			Helvetica,
+			Arial,
+			sans-serif,
+			'Apple Color Emoji',
+			'Segoe UI Emoji';
+		font-size: 16px;
 		line-height: 1.5;
 		box-sizing: border-box;
 		-webkit-tap-highlight-color: transparent;
+		@apply bg-canvas text-base text-fg antialiased;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--c-canvas: 12 14 20;
+			--c-surface: 26 29 38;
+			--c-fg: 236 238 243;
+			--c-muted: 150 158 175;
+			--c-line: 47 52 66;
+			--c-primary: 157 120 250;
+			--c-primary-fg: 255 255 255;
+			--c-primary-soft: 49 38 84;
+			--c-positive: 74 222 128;
+			--c-negative: 248 113 113;
+
+			color-scheme: dark;
+		}
 	}
 
 	@media not all and (hover: none) {
@@ -24,7 +59,7 @@
 
 	@keyframes highlight {
 		0% {
-			background-color: #fff4c2;
+			background-color: rgb(var(--c-primary-soft));
 		}
 
 		100% {
@@ -33,7 +68,25 @@
 	}
 
 	.highlight-animation {
-		animation: highlight 1s linear 1;
+		animation: highlight 1.2s ease-out 1;
 		animation-fill-mode: forwards;
+	}
+}
+
+@layer components {
+	.card {
+		@apply overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line/70;
+	}
+
+	.section-label {
+		@apply flex items-baseline gap-3 px-5 pb-2 pt-5 text-xs font-semibold uppercase tracking-wider text-muted;
+	}
+
+	.list-row {
+		@apply flex min-h-[56px] cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-fg/[0.04] active:bg-fg/[0.08];
+	}
+
+	.chip {
+		@apply inline-block whitespace-nowrap rounded-full bg-primary-soft px-2 py-0.5 align-middle text-xs font-medium text-primary;
 	}
 }

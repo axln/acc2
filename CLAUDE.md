@@ -68,8 +68,10 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
 
 ### UI
 
+- **Theme:** colors are semantic tokens (`canvas`, `surface`, `fg`, `muted`, `line`, `primary`, `primary-soft`, `positive`, `negative`) defined in `tailwind.config.ts` as CSS variables. `src/app.css` sets their RGB channels, with a `prefers-color-scheme: dark` override, so dark mode is automatic. Use these tokens, not raw Tailwind palette colors. The primary violet matches the app icon. `app.css` also defines the shared `card`, `section-label`, `list-row` and `chip` classes. The font sizes `xs`/`sm`/`base` are overridden to 13/15/17px, and tap targets are at least 44–48px.
+- Lists are rounded `card`s on the grey `canvas`, with a `section-label` above each one. `Fab.svelte` is a sticky bottom-right add button; the account page uses it for new transactions.
 - `src/components/` holds the forms and selects.
-- `src/components/controls/` holds generic inputs: Button, DropDown, InputBox, Select and KindSelect.
+- `src/components/controls/` holds generic inputs: Button (`variant` `primary` by default, or `secondary`), DropDown, InputBox, Select and KindSelect.
 - `Keypad.svelte` is the on-screen amount keypad.
 - `src/lib/actions/` contains Svelte actions (`autoClose`, `focus`).
 - The UI uses the native `alert` and `confirm` for errors and confirmations.
@@ -77,7 +79,7 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - A `{#key}` on the hash path wraps each page in a `div` with the custom `ios` transition.
   - `beforeNavigate` sets the direction. Going to a shallower hash path is a pop; anything else is a push.
   - The deeper view sits on top with a shadow and moves the full width. The view underneath shifts 30% and dims.
-  - Both views share one grid cell, so they overlap without absolute positioning. Each has a white background so they don't show through each other.
+  - Both views share one grid cell, so they overlap without absolute positioning. Each has the opaque `bg-canvas` background and `min-h-dvh`, so they don't show through each other and the sticky `Fab` sits at the bottom of short pages.
   - The container uses `overflow-x-clip`, not `overflow-x-hidden`: `hidden` would create a scroll container and break the sticky `Header`.
   - In a Svelte transition's `css(t, u)`, `t` runs 0→1 for intros but 1→0 for outros, so `t = 1` always means "in place".
 - `src/routes/test` is a scratch page.

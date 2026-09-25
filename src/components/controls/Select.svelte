@@ -6,7 +6,7 @@
 	bind:value
 	{...rest}
 	class={[
-		'h-[36px] rounded-sm border border-gray-400 px-[1px] text-[length:inherit] invalid:text-gray-400',
+		'h-12 rounded-xl border border-line bg-surface px-3 text-base text-fg outline-none transition-colors invalid:text-muted focus:border-primary focus:ring-2 focus:ring-primary/25',
 		rest.class
 	]}
 >

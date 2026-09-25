@@ -55,18 +55,16 @@
 	class={[
 		'w-full',
 		"[&>[data-role='popover']]:left-0",
-		"[&>[data-role='popover']]:mt-0.5",
-		"[&>[data-role='popover']]:overflow-y-scroll",
-		"[&>[data-role='popover']]:max-h-[400px]",
-		"[&>[data-role='popover']]:rounded-sm",
-		"[&>[data-role='popover']]:border",
-		"[&>[data-role='popover']]:border-gray-400"
+		"[&>[data-role='popover']]:mt-1",
+		"[&>[data-role='popover']]:overflow-y-auto",
+		"[&>[data-role='popover']]:max-h-[360px]",
+		"[&>[data-role='popover']]:py-1.5"
 	]}
 	bind:this={dropdown}
 >
 	{#snippet caption()}
 		<InputBox
-			class="w-full text-inherit outline-none"
+			class="w-full"
 			type="text"
 			bind:value
 			placeholder="Category"
@@ -106,15 +104,15 @@
 		{#each categoryList as c (c.id)}
 			<li
 				class={[
-					'cursor-pointer px-[5px] leading-10 hover:bg-[#e1effa]',
-					c.id === categoryId && 'bg-[#d1e3f0]'
+					'cursor-pointer px-4 py-3 transition-colors hover:bg-fg/[0.05] active:bg-fg/10',
+					c.id === categoryId && 'bg-primary-soft font-medium text-primary'
 				]}
 				data-id={c.id}
 			>
 				{c.title}{c.subtitle ? `:${c.subtitle}` : ''}
 			</li>
 		{:else}
-			<li class="text-gray-400 p-[5px]">Empty</li>
+			<li class="px-4 py-3 text-muted">No matching categories</li>
 		{/each}
 	</ul>
 </DropDown>

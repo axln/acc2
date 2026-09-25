@@ -38,7 +38,8 @@
 </svelte:head>
 
 <Header
-	title="{data.account.title}: Transaction"
+	title="Transaction"
+	subtitle={data.account.title}
 	returnPath="#/accounts/{data.account.id}"
 	menuItems={[
 		{

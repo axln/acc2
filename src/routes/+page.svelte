@@ -121,15 +121,23 @@
 	{onmenu}
 />
 
-{#each data.accountGroups as accountGroup}
-	<AccountGroup {accountGroup} accounts={data.accounts} />
-{/each}
-
-<div class="flex border-b border-gray-300 bg-gray-100 px-2.5 font-bold text-gray-500">
-	<div>Total</div>
-
-	<div class="ml-auto">
-		{formatAmount(total, true)}
-		{$baseCurrencyCode || ''}
+<section
+	class="mx-4 mt-4 rounded-3xl bg-gradient-to-br from-[#6d28d9] via-[#7c3aed] to-[#db2777] p-5 text-white shadow-lg shadow-primary/20"
+>
+	<div class="text-sm font-medium text-white/80">Total balance</div>
+	<div class="mt-1 flex items-baseline gap-2">
+		<span class="text-[2rem] font-bold tabular-nums leading-tight">{formatAmount(total, true)}</span
+		>
+		<span class="text-lg font-medium text-white/80">{$baseCurrencyCode || ''}</span>
 	</div>
+</section>
+
+<div class="pb-6">
+	{#each data.accountGroups as accountGroup}
+		<AccountGroup {accountGroup} accounts={data.accounts} />
+	{:else}
+		<p class="px-6 py-10 text-center text-muted">
+			No accounts yet. Create an account group in the menu, then add an account with the + button.
+		</p>
+	{/each}
 </div>

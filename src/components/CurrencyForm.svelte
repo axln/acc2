@@ -22,8 +22,8 @@
 	}
 </script>
 
-<form {onsubmit}>
-	<div class="m-[10px]">
+<form class="space-y-3 p-4" {onsubmit}>
+	<div>
 		<InputBox
 			class="w-full"
 			type="text"
@@ -33,11 +33,11 @@
 		/>
 	</div>
 
-	<div class="m-[10px]">
+	<div>
 		<InputBox class="w-full" type="text" bind:value={title} placeholder="Title" />
 	</div>
 
-	<div class="m-[10px]">
+	<div class="pt-2">
 		<Button class="w-full" type="submit">
 			{#if currency}
 				Save

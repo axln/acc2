@@ -8,63 +8,65 @@
 
 	interface Props {
 		title: string;
+		subtitle?: string;
 		returnPath?: string;
 		addPath?: string;
 		menuItems?: MenuItem[];
 		onmenu?: (id: string) => void;
 	}
 
-	let { title, returnPath, addPath, menuItems, onmenu }: Props = $props();
+	let { title, subtitle, returnPath, addPath, menuItems, onmenu }: Props = $props();
 
 	// svelte-ignore non_reactive_update
 	let dropdown: DropDown;
+
+	const iconButton =
+		'flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-fg/[0.06] active:bg-fg/10';
 </script>
 
-<header class="sticky top-0 z-[1] flex items-center bg-[cadetblue] p-2.5 text-white">
-	<div class="min-w-[24px]">
-		{#if returnPath}
-			<a class="flex items-center" href={returnPath} draggable={false}>
-				<BackIcon />
-			</a>
+<header
+	class="sticky top-0 z-[5] flex h-16 items-center gap-1 border-b border-line bg-surface/95 px-1.5 backdrop-blur"
+>
+	{#if returnPath}
+		<a class={iconButton} href={returnPath} draggable={false} aria-label="Back">
+			<BackIcon />
+		</a>
+	{/if}
+
+	<div class={['min-w-0 flex-auto', !returnPath && 'pl-3']}>
+		<h1 class="truncate text-xl font-semibold">{title}</h1>
+		{#if subtitle}
+			<div class="-mt-0.5 truncate text-sm text-muted">{subtitle}</div>
 		{/if}
 	</div>
 
-	<h1 class="m-0 flex-auto text-center text-white">
-		{title}
-	</h1>
+	{#if addPath}
+		<a class={iconButton} href={addPath} aria-label="Add">
+			<PlusIcon />
+		</a>
+	{/if}
 
-	<div class="ml-auto flex min-w-[24px] gap-[15px]">
-		{#if addPath}
-			<a class="flex items-center" href={addPath}>
-				<PlusIcon />
-			</a>
-		{/if}
+	{#if menuItems}
+		<DropDown
+			class={[
+				"[&>[data-role='caption']]:rounded-full",
+				"[&[data-opened]>[data-role='caption']]:bg-fg/[0.06]",
+				"[&>[data-role='popover']]:top-full",
+				"[&>[data-role='popover']]:mt-1"
+			]}
+			bind:this={dropdown}
+		>
+			{#snippet caption()}
+				<span class={iconButton}><MenuIcon /></span>
+			{/snippet}
 
-		{#if menuItems}
-			<DropDown
-				class={[
-					"[&>[data-role='caption']]:text-gray-200",
-					"[&>[data-role='caption']]:hover:text-white",
-					"[&>[data-role='caption']]:flex",
-					"[&>[data-role='caption']]:items-center",
-					"[&[data-opened]>[data-role='caption']]:text-white",
-					"[&>[data-role='popover']]:text-[var(--default-text-color)]",
-					"[&>[data-role='popover']]:rounded-sm"
-				]}
-				bind:this={dropdown}
-			>
-				{#snippet caption()}
-					<MenuIcon />
-				{/snippet}
-
-				<Menu
-					items={menuItems}
-					onmenu={(id: string) => {
-						dropdown.close();
-						onmenu?.(id);
-					}}
-				/>
-			</DropDown>
-		{/if}
-	</div>
+			<Menu
+				items={menuItems}
+				onmenu={(id: string) => {
+					dropdown.close();
+					onmenu?.(id);
+				}}
+			/>
+		</DropDown>
+	{/if}
 </header>

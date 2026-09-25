@@ -32,7 +32,7 @@
 </script>
 
 <form
-	class={['space-y-2.5', rest.class]}
+	class={['space-y-3', rest.class]}
 	onsubmit={async (e) => {
 		e.preventDefault();
 
@@ -67,7 +67,7 @@
 		/>
 	</div>
 
-	<div>
+	<div class="pt-2">
 		<Button class="w-full" type="submit" disabled={adding}>
 			{#if account}
 				Save

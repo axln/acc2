@@ -33,7 +33,7 @@
 		{@render caption()}
 	</div>
 	<div
-		class="absolute right-0 hidden select-none bg-white shadow group-data-[opened]:block"
+		class="absolute right-0 z-10 hidden select-none rounded-xl bg-surface text-fg shadow-lg ring-1 ring-line group-data-[opened]:block"
 		data-role="popover"
 	>
 		{@render children()}

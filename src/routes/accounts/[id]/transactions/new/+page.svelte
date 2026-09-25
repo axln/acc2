@@ -26,7 +26,11 @@
 	<title>{data.account.title}: New Transaction - Acc</title>
 </svelte:head>
 
-<Header title="{data.account.title}: New Transaction" returnPath="#/accounts/{data.account.id}" />
+<Header
+	title="New transaction"
+	subtitle={data.account.title}
+	returnPath="#/accounts/{data.account.id}"
+/>
 
 <TransactionForm
 	account={data.account}

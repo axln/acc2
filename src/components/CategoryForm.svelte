@@ -15,7 +15,7 @@
 </script>
 
 <form
-	class="m-[10px] space-y-2.5"
+	class="space-y-3 p-4"
 	onsubmit={async (e) => {
 		e.preventDefault();
 		if (title.trim()) {
@@ -33,7 +33,7 @@
 		<InputBox class="w-full" type="text" bind:value={subtitle} placeholder="Subtitle (optional)" />
 	</div>
 
-	<div>
+	<div class="pt-2">
 		<Button class="w-full" type="submit">
 			{#if category}
 				Save

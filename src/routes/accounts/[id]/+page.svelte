@@ -8,6 +8,7 @@
 	import { goto, beforeNavigate } from '$app/navigation';
 	import type { EntryDoc } from '~/type.js';
 	import Header from '~/components/Header.svelte';
+	import Fab from '~/components/Fab.svelte';
 	import Entry from './Entry.svelte';
 	import { formatAmount, highlightElement } from '~/lib/utils';
 
@@ -48,9 +49,6 @@
 <Header
 	title={data.account.title}
 	returnPath="#/"
-	addPath="#/accounts/{data.account.id}/transactions/new{data.lastTimestamp
-		? `?t=${data.lastTimestamp}`
-		: ''}"
 	menuItems={[
 		{
 			id: 'edit',
@@ -60,20 +58,40 @@
 	]}
 />
 
+<div class="flex items-baseline gap-2 px-5 pb-1 pt-4">
+	<span class="text-sm text-muted">Balance</span>
+	<span
+		class={['ml-auto text-2xl font-bold tabular-nums', data.account.balance < 0 && 'text-negative']}
+		>{formatAmount(data.account.balance, true)}</span
+	>
+	<span class="text-muted">{data.account.currencyCode}</span>
+</div>
+
 {#each Object.keys(data.entriesByDays) as dayKey}
-	<div class="flex gap-2.5 border-b border-gray-300 bg-gray-100 px-2.5 py-0">
-		<span class="flex-auto font-bold">{dayKey}</span>
-		<span class="flex-none">
+	<h2 class="section-label">
+		<span class="flex-auto">{dayKey}</span>
+		<span class="flex-none tabular-nums">
 			{formatAmount(calcDayTotal(data.entriesByDays[dayKey]), true, true)}
 		</span>
-	</div>
+	</h2>
 
-	{#each data.entriesByDays[dayKey] as entry (entry.id)}
-		<Entry
-			{entry}
-			ontransaction={(id: string) => {
-				goto(`#/accounts/${data.account.id}/transactions/${id}`);
-			}}
-		/>
-	{/each}
+	<div class="card mx-4 divide-y divide-line">
+		{#each data.entriesByDays[dayKey] as entry (entry.id)}
+			<Entry
+				{entry}
+				ontransaction={(id: string) => {
+					goto(`#/accounts/${data.account.id}/transactions/${id}`);
+				}}
+			/>
+		{/each}
+	</div>
+{:else}
+	<p class="px-6 py-10 text-center text-muted">No transactions yet.</p>
 {/each}
+
+<Fab
+	label="New transaction"
+	href="#/accounts/{data.account.id}/transactions/new{data.lastTimestamp
+		? `?t=${data.lastTimestamp}`
+		: ''}"
+/>

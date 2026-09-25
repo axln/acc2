@@ -20,18 +20,22 @@
 	);
 </script>
 
-<div>
-	<div class="flex border-b border-gray-300 bg-gray-100 px-2.5 py-0 font-bold text-gray-500">
-		<span class="flex-auto">{accountGroup.title}</span>
-		<span>{formatAmount(balance, true)} {accountGroup.currencyCode}</span>
-	</div>
+<section>
+	<h2 class="section-label">
+		<span class="flex-auto truncate">{accountGroup.title}</span>
+		<span class="tabular-nums">{formatAmount(balance, true)} {accountGroup.currencyCode}</span>
+	</h2>
 
-	{#each groupAccounts as account (account.id)}
-		<Account
-			{account}
-			onaccount={(id) => {
-				goto(`#/accounts/${id}`);
-			}}
-		/>
-	{/each}
-</div>
+	{#if groupAccounts.length}
+		<div class="card mx-4 divide-y divide-line">
+			{#each groupAccounts as account (account.id)}
+				<Account
+					{account}
+					onaccount={(id) => {
+						goto(`#/accounts/${id}`);
+					}}
+				/>
+			{/each}
+		</div>
+	{/if}
+</section>

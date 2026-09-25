@@ -23,4 +23,4 @@
 
 <Header title="New Account" returnPath="#/" />
 
-<AccountForm class="m-2.5" accountGroups={data.accountGroups} {onsave} />
+<AccountForm class="p-4" accountGroups={data.accountGroups} {onsave} />

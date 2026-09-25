@@ -14,7 +14,7 @@
 	bind:value
 	{...rest}
 	class={[
-		'h-[36px] rounded-sm border border-gray-400 px-[5px] text-[length:inherit] disabled:border-gray-300 disabled:text-gray-400',
+		'h-12 rounded-xl border border-line bg-surface px-3.5 text-base text-fg outline-none transition-colors placeholder:text-muted/80 focus:border-primary focus:ring-2 focus:ring-primary/25 disabled:bg-fg/[0.03] disabled:text-muted',
 		rest.class
 	]}
 	use:focus={rest.focus}
