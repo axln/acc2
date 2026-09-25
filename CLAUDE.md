@@ -41,6 +41,7 @@ The app uses hash-based routing, so every in-app link and every `goto()` call us
   - Bump the version number in `openDB('acc', N, ...)`.
   - Add guarded, idempotent steps to `upgrade()`. The upgrade runs on existing databases too, so check `indexNames.contains` before every `createIndex`, or it throws on a phone that already has that index.
   - Update the `AccDB` schema in `src/type.ts`.
+  - An upgrade waits until every other open copy of the app (another tab, the installed app window) closes its connection. Before the `blocked`/`blocking` handlers in `initDb`, that left the new version blank with no message, which happened on the move to version 4. `blocked` tells the user to close the other copy. `blocking` closes the outdated copy's connection and asks the user to close or reload it; it deliberately doesn't reload itself, since a reload could get the old version from the service worker and block the upgrade again.
 - There are 8 object stores: `accountGroups`, `accounts`, `currencies` (keyed by `code`), `categories`, `entries`, `transactions`, `settings` (keyed by `name`) and `rates` (keyed by `code`). IDs come from `nanoid(5)`. The schema is at version 4, which added the `entries` index `accountTime` (`[accountId, timestamp, id]`).
 - **Double-entry model:**
   - A `TransactionDoc` (kind `EXPENSE` / `INCOME` / `TRANSFER`) owns one `EntryDoc`, or two for a transfer.

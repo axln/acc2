@@ -66,6 +66,18 @@ export async function initDb() {
 			if (!upgradeDb.objectStoreNames.contains('rates')) {
 				upgradeDb.createObjectStore('rates', { keyPath: 'code' });
 			}
+		},
+		// The upgrade waits until every other open copy of the app lets go of the database;
+		// without a word the app would just stay blank.
+		blocked() {
+			alert('Acc is still open in another tab or window. Close it to finish the update.');
+		},
+		// A newer version of the app, open elsewhere, needs to upgrade the database. Let go of
+		// it; this copy is outdated anyway. It doesn't reload itself, since the reload could
+		// get the old version from the service worker and block the upgrade again.
+		blocking() {
+			db.close();
+			alert('Acc was updated in another tab or window. Close this one, or reload it.');
 		}
 	});
 }
