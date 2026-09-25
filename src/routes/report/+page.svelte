@@ -156,7 +156,7 @@
 	<title>Report - Acc</title>
 </svelte:head>
 
-<Header title="Report" returnPath="#/" />
+<Header title="Report" subtitle="Amounts in {$baseCurrencyCode}" returnPath="#/" />
 
 <div class="px-4 pt-4">
 	<InputBox class="w-full" type="month" bind:value={monthYear} />
