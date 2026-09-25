@@ -37,8 +37,19 @@
 		}
 	});
 
-	function calcDayTotal(entries: EntryDoc[]) {
-		return entries.reduce((acc, item) => acc + item.amount, 0);
+	// money that came into the account and money that left it, kept apart instead of netted
+	function calcDayFlows(entries: EntryDoc[]) {
+		return entries.reduce(
+			(acc, item) => {
+				if (item.amount > 0) {
+					acc.credit += item.amount;
+				} else {
+					acc.debit += item.amount;
+				}
+				return acc;
+			},
+			{ credit: 0, debit: 0 }
+		);
 	}
 </script>
 
@@ -59,11 +70,17 @@
 />
 
 {#each Object.keys(data.entriesByDays) as dayKey}
+	{@const flows = calcDayFlows(data.entriesByDays[dayKey])}
 	<h2 class="section-label">
 		<span class="flex-auto">{dayKey}</span>
-		<span class="flex-none tabular-nums">
-			{formatAmount(calcDayTotal(data.entriesByDays[dayKey]), true, true)}
-		</span>
+		{#if flows.credit}
+			<span class="flex-none tabular-nums text-positive"
+				>{formatAmount(flows.credit, true, true)}</span
+			>
+		{/if}
+		{#if flows.debit}
+			<span class="flex-none tabular-nums">{formatAmount(flows.debit, true)}</span>
+		{/if}
 	</h2>
 
 	<div class="card mx-4 divide-y divide-line">
