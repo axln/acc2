@@ -15,9 +15,12 @@ library.
 - Categories for transactions
 - Mobile-first UI with large text and tap targets, and automatic dark mode
 - Balances kept low-key on screen, for privacy when recording spendings in public
+- Accounts with long histories open quickly: the newest transactions load first, older ones
+  as you scroll
 - JSON backup and restore of the whole database
 - iOS-style push/pop slide transitions between views
 - Installable as a PWA with offline launch support, for use as a home-screen app
+- An About page (in the home screen menu) showing the app version
 
 ## Live release
 
@@ -53,8 +56,14 @@ There is no test framework or test suite in this project.
 ## Deployment
 
 Pushes to `main` trigger [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
-which type-checks, runs `yarn build`, and publishes `dist/` to GitHub Pages via
-`actions/deploy-pages`. `dist/` is not committed to git.
+which bumps the patch version, type-checks, runs `yarn build`, and publishes `dist/` to
+GitHub Pages via `actions/deploy-pages`. `dist/` is not committed to git.
+
+The version is shown on the About page. The workflow raises the patch number in
+`package.json` with [`scripts/bump-version.mjs`](scripts/bump-version.mjs) before it
+builds. After the deploy, it commits the bump back to `main` as
+`chore: bump version to vX.Y.Z [skip ci]`. Every deploy therefore adds a commit to
+`main`, so pull before you push. Don't bump the version by hand.
 
 ## PWA & offline support
 
@@ -70,6 +79,12 @@ cache, so it never stores an app shell from the previous deploy.
 If the app shows a blank page after a deploy, reload it twice. Don't clear the site's
 data to fix it: that also deletes all of your accounts and transactions, which exist
 only in the browser.
+
+A release that changes the database structure has to upgrade it on first launch. The
+upgrade waits until every other open copy of the app has closed. If it can't finish,
+the app shows "Acc is waiting to open your data" with instructions. Close the app's
+other tabs and windows, or quit the browser. On Android, force-stop Chrome in
+Settings → Apps. Make a backup before opening a release like this.
 
 The app icon's source is [`static/favicon.svg`](static/favicon.svg), which also serves
 as the favicon. The PNG icons (`static/favicon.png` and `static/icons/icon-*.png`) are
