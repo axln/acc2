@@ -24,8 +24,9 @@
 		'flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-fg/[0.06] active:bg-fg/10';
 </script>
 
+<!-- select-none: on a phone, a tap on the title would select it and bring up Chrome's search bar -->
 <header
-	class="sticky top-0 z-[5] flex h-16 items-center gap-1 border-b border-line bg-surface/95 px-1.5 backdrop-blur"
+	class="sticky top-0 z-[5] flex h-16 select-none items-center gap-1 border-b border-line bg-surface/95 px-1.5 backdrop-blur"
 >
 	{#if returnPath}
 		<a class={iconButton} href={returnPath} draggable={false} aria-label="Back">
