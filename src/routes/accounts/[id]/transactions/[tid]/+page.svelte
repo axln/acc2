@@ -41,6 +41,7 @@
 	title="Transaction"
 	subtitle={data.account.title}
 	returnPath="#/accounts/{data.account.id}"
+	saveForm="transaction-form"
 	menuItems={[
 		{
 			id: 'delete',
@@ -51,6 +52,7 @@
 />
 
 <TransactionForm
+	id="transaction-form"
 	account={data.account}
 	transaction={data.transaction}
 	accountGroups={data.accountGroups}

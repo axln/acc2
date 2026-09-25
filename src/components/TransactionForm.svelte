@@ -22,6 +22,7 @@
 		accountGroups: AccountGroupDoc[];
 		accounts: AccountDoc[];
 		onsave: (params: TransactionParams) => void;
+		id?: string;
 	}
 
 	const { categories } = useStore();
@@ -32,7 +33,8 @@
 		defaultTimestamp,
 		accountGroups,
 		accounts,
-		onsave
+		onsave,
+		id
 	}: Props = $props();
 
 	let kind: TransactionKind = $state(transactionDoc?.kind || TransactionKind.Expense);
@@ -139,7 +141,7 @@
 	}
 </script>
 
-<form class="space-y-3 p-4" {onsubmit}>
+<form class="space-y-3 p-4" {id} {onsubmit}>
 	<KindSelect bind:kind />
 
 	<div class="flex gap-2">

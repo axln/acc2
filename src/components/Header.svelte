@@ -3,6 +3,7 @@
 	import MenuIcon from './icons/MenuIcon.svelte';
 	import BackIcon from './icons/BackIcon.svelte';
 	import PlusIcon from './icons/PlusIcon.svelte';
+	import CheckIcon from './icons/CheckIcon.svelte';
 	import DropDown from './controls/DropDown.svelte';
 	import Menu from './Menu.svelte';
 
@@ -11,11 +12,13 @@
 		subtitle?: string;
 		returnPath?: string;
 		addPath?: string;
+		/** id of a form that a checkmark button submits */
+		saveForm?: string;
 		menuItems?: MenuItem[];
 		onmenu?: (id: string) => void;
 	}
 
-	let { title, subtitle, returnPath, addPath, menuItems, onmenu }: Props = $props();
+	let { title, subtitle, returnPath, addPath, saveForm, menuItems, onmenu }: Props = $props();
 
 	// svelte-ignore non_reactive_update
 	let dropdown: DropDown;
@@ -45,6 +48,12 @@
 		<a class={iconButton} href={addPath} aria-label="Add">
 			<PlusIcon />
 		</a>
+	{/if}
+
+	{#if saveForm}
+		<button class={[iconButton, 'text-primary']} type="submit" form={saveForm} aria-label="Save">
+			<CheckIcon size={22} />
+		</button>
 	{/if}
 
 	{#if menuItems}
