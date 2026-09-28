@@ -58,8 +58,6 @@
 
 	// $inspect(secondAccountId);
 
-	let categoryCombo = $state<CategoryCombo>();
-
 	let secondAccount = $derived(
 		secondAccountId ? accounts.find((a) => a.id === secondAccountId) : null
 	);
@@ -161,15 +159,7 @@
 		{#if kind === TransactionKind.Transfer}
 			<AccountSelect bind:accountId={secondAccountId} {accounts} {accountGroups} placeholder="To" />
 		{:else}
-			<CategoryCombo bind:this={categoryCombo} bind:categoryId bind:value={categoryValue} />
-			<Button
-				class="w-20 flex-none"
-				variant="secondary"
-				type="button"
-				onclick={() => {
-					categoryCombo?.clear();
-				}}>Clear</Button
-			>
+			<CategoryCombo bind:categoryId bind:value={categoryValue} />
 		{/if}
 	</div>
 

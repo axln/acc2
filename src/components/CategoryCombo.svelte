@@ -3,6 +3,7 @@
 	import type { CategoryDoc } from '~/type';
 	import DropDown from './controls/DropDown.svelte';
 	import InputBox from './controls/InputBox.svelte';
+	import CloseIcon from './icons/CloseIcon.svelte';
 	import { useStore } from '~/lib/store';
 
 	interface Props {
@@ -107,10 +108,13 @@
 		dropdown.close();
 	}
 
-	export function clear() {
+	// the cross in the field drops the choice and the typed text
+	function clear() {
 		categoryId = '';
 		value = '';
 		query = '';
+		beforeMove = null;
+		dropdown.close();
 	}
 </script>
 
@@ -127,50 +131,66 @@
 	bind:this={dropdown}
 >
 	{#snippet caption()}
-		<InputBox
-			class="w-full"
-			type="text"
-			bind:value
-			placeholder="Category"
-			onclick={() => {
-				// a chosen category shows the whole list, typed text keeps it filtered
-				query = categoryId ? '' : value;
-				open();
-			}}
-			oninput={(e: Event & { currentTarget: HTMLInputElement }) => {
-				const text = e.currentTarget.value;
-				query = text;
-				// typing keeps the text, so Escape has nothing to undo
-				beforeMove = null;
-				const category = $categories.find(
-					(c) => text.trim().toLowerCase() === formatTitle(c).toLowerCase()
-				);
-				categoryId = category ? category.id : '';
-				open();
-			}}
-			onkeydown={(e: KeyboardEvent) => {
-				if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-					e.preventDefault();
-					move(e.key === 'ArrowDown' ? 1 : -1);
-				} else if (e.key === 'Enter' && dropdown.opened()) {
-					// Enter fixes the choice and closes the list instead of submitting the form
-					e.preventDefault();
-					if (categoryId) {
-						select(categoryId);
-					} else {
+		<div class="relative">
+			<InputBox
+				class={['w-full', value && 'pr-11']}
+				type="text"
+				bind:value
+				placeholder="Category"
+				onclick={() => {
+					// a chosen category shows the whole list, typed text keeps it filtered
+					query = categoryId ? '' : value;
+					open();
+				}}
+				oninput={(e: Event & { currentTarget: HTMLInputElement }) => {
+					const text = e.currentTarget.value;
+					query = text;
+					// typing keeps the text, so Escape has nothing to undo
+					beforeMove = null;
+					const category = $categories.find(
+						(c) => text.trim().toLowerCase() === formatTitle(c).toLowerCase()
+					);
+					categoryId = category ? category.id : '';
+					open();
+				}}
+				onkeydown={(e: KeyboardEvent) => {
+					if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+						e.preventDefault();
+						move(e.key === 'ArrowDown' ? 1 : -1);
+					} else if (e.key === 'Enter' && dropdown.opened()) {
+						// Enter fixes the choice and closes the list instead of submitting the form
+						e.preventDefault();
+						if (categoryId) {
+							select(categoryId);
+						} else {
+							query = '';
+							dropdown.close();
+						}
+					} else if (e.key === 'Escape' && dropdown.opened()) {
+						// Escape drops the choice made with the arrows and closes the list
+						if (beforeMove) {
+							({ categoryId, value } = beforeMove);
+						}
 						query = '';
 						dropdown.close();
 					}
-				} else if (e.key === 'Escape' && dropdown.opened()) {
-					// Escape drops the choice made with the arrows and closes the list
-					if (beforeMove) {
-						({ categoryId, value } = beforeMove);
-					}
-					query = '';
-					dropdown.close();
-				}
-			}}
-		/>
+				}}
+			/>
+			{#if value}
+				<button
+					class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted transition-colors hover:text-fg"
+					type="button"
+					aria-label="Clear category"
+					onpointerdown={(e) => {
+						// keeps focus (and the keyboard) where it is
+						e.preventDefault();
+					}}
+					onclick={clear}
+				>
+					<CloseIcon size={18} />
+				</button>
+			{/if}
+		</div>
 	{/snippet}
 
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
